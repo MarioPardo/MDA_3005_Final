@@ -1,5 +1,5 @@
 package org.example;
-
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Scanner;
@@ -23,10 +23,10 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-        String databaseName = "***";
+        String databaseName = "finalproject";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "***";
+        String password = "xsixteen123";
         //</editor-fold
 
         try{
@@ -61,8 +61,43 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("Customer sign in selected");
-                    //do stuff
+
+                    System.out.println("Enter your first name:");
+                    String firstName = scanner.nextLine();
+                    scanner.nextLine();
+
+                    System.out.println("Enter your last name:");
+                    String lastName = scanner.nextLine();
+
+                    System.out.println("Enter your age:");
+                    int age = scanner.nextInt();
+
+                    System.out.println("Enter your weight:");
+                    float weight = scanner.nextFloat();
+
+                    System.out.println("Enter your height:");
+                    float height = scanner.nextFloat();
+
+                    System.out.println("Enter your body fat percentage:");
+                    float bodyFatPercentage = scanner.nextFloat();
+                    scanner.nextLine();
+
+                    System.out.println("Enter your health conditions (comma-separated list):");
+                    String[] healthConditions = scanner.nextLine().split(",");
+
+                    System.out.println("Enter your goal weight:");
+                    int goalWeight = scanner.nextInt();
+
+                    System.out.println("Enter your goal date (YYYY-MM-DD):");
+                    String goalDateStr = scanner.next();
+                    java.sql.Date goalDate = java.sql.Date.valueOf(goalDateStr);
+
+                    Profile.addProfile(firstName, lastName, age, height, weight, bodyFatPercentage, healthConditions, goalWeight, goalDate);
                     break;
+
+
+                //do stuff
+
                 case 2:
                     System.out.println("Trainer sign in selected");
                     //do stuff
