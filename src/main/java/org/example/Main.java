@@ -53,6 +53,7 @@ public class Main {
             System.out.println("1. Customer Sign In");
             System.out.println("2. Trainer Sign In");
             System.out.println("3. General Management");
+            System.out.println("4. update test");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
 
@@ -106,6 +107,43 @@ public class Main {
                     System.out.println("General Management selected");
                     //do stuff
                     break;
+                case 4:
+                    System.out.println("update profile test");
+                    System.out.println("Enter your first name:");
+                    int id = scanner.nextInt();
+
+                    System.out.println("Enter your first name:");
+                    String firstName1 = scanner.next();
+
+                    System.out.println("Enter your last name:");
+                    String lastName1 = scanner.next();
+
+                    System.out.println("Enter your age:");
+                    int age1 = scanner.nextInt();
+
+                    System.out.println("Enter your weight:");
+                    float weight1 = scanner.nextFloat();
+
+                    System.out.println("Enter your height:");
+                    float height1 = scanner.nextFloat();
+
+                    System.out.println("Enter your body fat percentage:");
+                    float bodyFatPercentage1 = scanner.nextFloat();
+                    scanner.nextLine();
+
+                    System.out.println("Enter your health conditions (comma-separated list):");
+                    String[] healthConditions1 = scanner.nextLine().split(",");
+
+                    System.out.println("Enter your goal weight:");
+                    int goalWeight1 = scanner.nextInt();
+
+                    System.out.println("Enter your goal date (YYYY-MM-DD):");
+                    String goalDateStr1 = scanner.next();
+                    java.sql.Date goalDate1 = java.sql.Date.valueOf(goalDateStr1);
+
+                    Profile.updateProfile(id,firstName1,lastName1,age1,height1,weight1,bodyFatPercentage1,healthConditions1,goalWeight1,goalDate1);
+                    break;
+
                 case 0:
                     System.out.println("Exiting application");
                     return;
