@@ -43,5 +43,21 @@ public class Routine
     }
 
 
+    public static boolean isRoutineExists(int routineID) {
+        Connection conn = Main.dbConnection;
+        try {
+            String sql = "SELECT id FROM Routine WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, routineID);
+                ResultSet rs = pstmt.executeQuery();
+                return rs.next(); // If next() returns true, routine exists
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR: Failed to check routine existence.");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }

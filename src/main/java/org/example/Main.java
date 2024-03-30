@@ -163,6 +163,8 @@ public class Main {
             System.out.println("2. Show all clients");
             System.out.println("3. Find gym profile by name");
             System.out.println("4. Create new Routine");
+            System.out.println("5, Show all My Routines");
+            System.out.println("6, Add Routine to Client");
             System.out.println("0. Exit");
 
             System.out.print("Enter your choice: ");
@@ -180,6 +182,12 @@ public class Main {
                     break;
                 case 4:
                     Trainer.createTrainerRoutine(trainerID);
+                    break;
+                case 5:
+                    //Trainer.showAllRoutines();
+                    break;
+                case 6:
+                    Trainer.addRoutineToProfile();
                     break;
                 case 0:
                     System.out.println("Exiting Trainer Dashboard \n \n");
