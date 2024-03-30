@@ -13,6 +13,8 @@ public class Routine
         System.out.print("Enter the name of the routine: ");
         String routineName = scanner.nextLine();
 
+        scanner.nextLine();
+
         System.out.print("Enter exercises as a comma-separated list: ");
         String exercisesInput = scanner.nextLine();
 

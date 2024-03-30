@@ -65,7 +65,7 @@ public class Main {
                     if(custID == -1)
                         break;
 
-                    CustomerUI();
+                    CustomerUI(custID);
 
                     break;
                 case 2:
@@ -74,7 +74,8 @@ public class Main {
                     if(trainerID == -1)
                         break;
 
-                    TrainerUI();
+                    trainerID = 1; //for testing for now
+                    TrainerUI(trainerID);
 
                     break;
                 case 3:
@@ -121,7 +122,7 @@ public class Main {
         return ID;
     }
     
-    public static void CustomerUI()
+    public static void CustomerUI(int custID)
     {
         System.out.println(" \n \n Welcome to your Customer profile!");
 
@@ -152,18 +153,41 @@ public class Main {
 
     }
 
-    public static void TrainerUI()
+    public static void TrainerUI(int trainerID)
     {
         System.out.println(" \n \n Welcome to your Trainer profile!");
 
-        //set working hours for the day
+        while (true) {
+            System.out.println("\nSelect an option:");
+            System.out.println("1. Set working hours for the day");
+            System.out.println("2. Show all clients");
+            System.out.println("3. Find gym profile by name");
+            System.out.println("4. Create new Routine");
+            System.out.println("0. Exit");
 
-        //show all profiles
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
 
-        //find profile by name
-
-        //add routine to profile
-
+            switch (choice) {
+                case 1:
+                    //setWorkingHours();
+                    break;
+                case 2:
+                    //showAllClients();
+                    break;
+                case 3:
+                   // findGymProfileByName();
+                    break;
+                case 4:
+                    Trainer.createTrainerRoutine(trainerID);
+                    break;
+                case 0:
+                    System.out.println("Exiting Trainer Dashboard \n \n");
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
 
     }
 
