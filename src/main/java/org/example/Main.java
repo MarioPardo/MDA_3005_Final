@@ -62,38 +62,9 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("Customer sign in selected");
+                    Profile.addProfile();
 
-                    System.out.println("Enter your first name:");
-                    String firstName = scanner.nextLine();
-                    scanner.nextLine();
 
-                    System.out.println("Enter your last name:");
-                    String lastName = scanner.nextLine();
-
-                    System.out.println("Enter your age:");
-                    int age = scanner.nextInt();
-
-                    System.out.println("Enter your weight:");
-                    float weight = scanner.nextFloat();
-
-                    System.out.println("Enter your height:");
-                    float height = scanner.nextFloat();
-
-                    System.out.println("Enter your body fat percentage:");
-                    float bodyFatPercentage = scanner.nextFloat();
-                    scanner.nextLine();
-
-                    System.out.println("Enter your health conditions (comma-separated list):");
-                    String[] healthConditions = scanner.nextLine().split(",");
-
-                    System.out.println("Enter your goal weight:");
-                    int goalWeight = scanner.nextInt();
-
-                    System.out.println("Enter your goal date (YYYY-MM-DD):");
-                    String goalDateStr = scanner.next();
-                    java.sql.Date goalDate = java.sql.Date.valueOf(goalDateStr);
-
-                    Profile.addProfile(firstName, lastName, age, height, weight, bodyFatPercentage, healthConditions, goalWeight, goalDate);
                     break;
 
 
