@@ -95,15 +95,9 @@ public class Main {
         }
 
 
-
-
-
-
     }
 
-
     //UI Functions
-
     public static int SignIn(int type)
     {
         System.out.print("Enter your username: ");
@@ -116,21 +110,25 @@ public class Main {
 
         switch (type)
         {
-            case 1: //call user sign in function
+            case 1: //call sql user sign  in function
                 break;
-            case 2:  //call trainer sign in function
+            case 2:  //call sql trainer sign in function
                 break;
-            case 3: //management sigin in function
+            case 3: //management sql  sign in in function
                 break;
         }
 
         return ID;
     }
-
-
+    
     public static void CustomerUI()
     {
         System.out.println(" \n \n Welcome to your Customer profile!");
+
+        //view schedule
+
+        
+
     }
 
     public static void TrainerUI()
