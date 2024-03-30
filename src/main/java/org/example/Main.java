@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class Main {
 
     static Connection dbConnection;
+    static Scanner scanner;
 
     public static void main(String[] args)
     {
@@ -44,8 +45,7 @@ public class Main {
 
     public static void launch()
     {
-        Scanner scanner = new Scanner(System.in);
-
+        scanner = new Scanner(System.in);
         System.out.println(" *** Welcome to the MDA Fitness Club  *** ");
 
         while (true) {
@@ -61,15 +61,30 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("Customer sign in selected");
-                    //do stuff
+                    int custID = SignIn(1);
+                    if(custID == -1)
+                        break;
+
+                    CustomerUI();
+
                     break;
                 case 2:
                     System.out.println("Trainer sign in selected");
-                    //do stuff
+                    int trainerID = SignIn(1);
+                    if(trainerID == -1)
+                        break;
+
+                    TrainerUI();
+
                     break;
                 case 3:
                     System.out.println("General Management selected");
-                    //do stuff
+                    int mgmtID = SignIn(1);
+                    if(mgmtID == -1)
+                        break;
+
+                    MgmtUI();
+
                     break;
                 case 0:
                     System.out.println("Exiting application");
@@ -80,8 +95,92 @@ public class Main {
         }
 
 
+    }
+
+    //UI Functions
+    public static int SignIn(int type)
+    {
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine();
+        scanner.nextLine();
+        System.out.print("Enter your password: ");
+        String password = scanner.nextLine();
+
+        int ID = 1;
+
+        switch (type)
+        {
+            case 1: //call sql user sign  in function
+                break;
+            case 2:  //call sql trainer sign in function
+                break;
+            case 3: //management sql  sign in in function
+                break;
+        }
+
+        return ID;
+    }
+    
+    public static void CustomerUI()
+    {
+        System.out.println(" \n \n Welcome to your Customer profile!");
+
+        //view all profiles
+
+        //add profile
+            //TODO link this added profile to the customer
+        Profile.addProfile();
+
+        //select profile to go to
+        
+
+    }
+
+    public static void ProfileUI(int profileID)
+    {
+        //view schedule
+
+        //view all available group classes
+
+        //add group class to schedule
+
+        //book personal training class
+
+        //remove class from schedule
+
+        //change health
+
+    }
+
+    public static void TrainerUI()
+    {
+        System.out.println(" \n \n Welcome to your Trainer profile!");
+
+        //set working hours for the day
+
+        //show all profiles
+
+        //find profile by name
+
+        //add routine to profile
 
 
+    }
+
+    public static void MgmtUI()
+    {
+        System.out.println(" \n \n Welcome to your Management dashboard!");
+
+        //view day's schedule
+
+        //make a group class and add to sched
+
+        //update a class
+
+        // Equipment management
+            //1)View all repair tickets
+            //2) Add repair ticket
+            //3) remove repair ticket
 
 
     }
