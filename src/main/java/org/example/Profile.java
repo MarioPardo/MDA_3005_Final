@@ -119,5 +119,22 @@ public class Profile {
 
         Profile.addProfile(firstName, lastName, age, height, weight, bodyFatPercentage, healthConditions, goalWeight, goalDate);
     }
+
+
+    public static boolean isProfileExists(int profileID) {
+        Connection conn = Main.dbConnection;
+        try {
+            String sql = "SELECT id FROM Profile WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, profileID);
+                ResultSet rs = pstmt.executeQuery();
+                return rs.next(); // If next() returns true, profile exists
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR: Failed to check profile existence.");
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
 
