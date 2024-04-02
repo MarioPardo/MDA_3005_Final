@@ -7,6 +7,34 @@ import java.util.Scanner;
 public class Trainer
 {
 
+    public static int TrainerSignIn(String username, String password) {
+        Connection conn = Main.dbConnection;
+
+        String sql = "SELECT * FROM Trainer WHERE username = ? AND password = ?";
+        try{
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                int trainerId = rs.getInt("id");
+                System.out.println("Login successful!");
+                return trainerId;
+            } else {
+                System.out.println("Incorrect username or password.");
+                return -1;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+
+
     public static void createTrainerRoutine(int trainerID)
     {
         int routineID = Routine.createRoutine();
