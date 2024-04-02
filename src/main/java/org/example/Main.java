@@ -1,7 +1,6 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.*;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -24,10 +23,10 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-        String databaseName = "***";
+        String databaseName = "**";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "***";
+        String password = "**";
         //</editor-fold
 
         try{
@@ -70,7 +69,7 @@ public class Main {
                     break;
                 case 2:
                     System.out.println("Trainer sign in selected");
-                    int trainerID = SignIn(1);
+                    int trainerID = SignIn(2);
                     if(trainerID == -1)
                         break;
 
@@ -80,7 +79,7 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("General Management selected");
-                    int mgmtID = SignIn(1);
+                    int mgmtID = SignIn(3);
                     if(mgmtID == -1)
                         break;
 
@@ -102,26 +101,33 @@ public class Main {
     public static int SignIn(int type)
     {
         System.out.print("Enter your username: ");
-        String username = scanner.nextLine();
         scanner.nextLine();
+        String username = scanner.nextLine();
+        username = username.trim();
+
         System.out.print("Enter your password: ");
         String password = scanner.nextLine();
+        password = password.trim();
 
-        int ID = 1;
+
+        int ID = -1;
 
         switch (type)
         {
             case 1: //call sql user sign  in function
                 break;
             case 2:  //call sql trainer sign in function
+                 ID = Trainer.TrainerSignIn(username,password);
                 break;
+
             case 3: //management sql  sign in in function
                 break;
         }
 
         return ID;
     }
-    
+
+
     public static void CustomerUI(int custID)
     {
         System.out.println(" \n \n Welcome to your Customer profile!");
