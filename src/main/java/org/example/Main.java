@@ -61,9 +61,14 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("Customer sign in selected");
+
                     int custID = SignIn(1);
                     if(custID == -1)
                         break;
+
+                    //Profile.addProfile();
+                    Schedule.getClassesForAccount(7);
+
 
                     CustomerUI(custID);
 
