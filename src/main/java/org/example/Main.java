@@ -115,12 +115,14 @@ public class Main {
         switch (type)
         {
             case 1: //call sql user sign  in function
+                 ID = Customer.customerSignIn(username, password);
                 break;
             case 2:  //call sql trainer sign in function
                  ID = Trainer.TrainerSignIn(username,password);
                 break;
 
             case 3: //management sql  sign in in function
+
                 break;
         }
 
