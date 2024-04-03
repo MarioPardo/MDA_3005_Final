@@ -47,6 +47,7 @@ public class Schedule
                 // Retrieve other class details as needed
 
                 // Print class details
+                System.out.println("Class Information:");
                 System.out.println("Class ID: " + classId);
                 System.out.println("Date: " + date);
                 System.out.println("Time: " + time);
@@ -57,6 +58,7 @@ public class Schedule
                     System.out.println("Room Number: N/A");
                 }
                 System.out.println("Trainer ID: " + trainerId);
+                System.out.println("\n");
             }
         } catch (SQLException e) {
             e.printStackTrace();
