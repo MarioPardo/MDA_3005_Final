@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-<<<<<<< HEAD
-    <list default="true" id="d54a33b0-619b-482a-80af-d4ee25209e40" name="Changes" comment="" />
-=======
     <list default="true" id="d54a33b0-619b-482a-80af-d4ee25209e40" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Schedule.java" afterDir="false" />
     </list>
->>>>>>> 0967cc1b2e9969c2963e4080e9e9216c37a71147
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,20 +17,15 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-<<<<<<< HEAD
-=======
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
->>>>>>> 0967cc1b2e9969c2963e4080e9e9216c37a71147
   <component name="ProjectId" id="2e97YodbLRnXLLo6aAv61AXqiEn" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-<<<<<<< HEAD
-=======
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
@@ -58,7 +49,6 @@
       </list>
     </recent_temporary>
   </component>
->>>>>>> 0967cc1b2e9969c2963e4080e9e9216c37a71147
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
