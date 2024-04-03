@@ -85,7 +85,7 @@ public class Schedule
     private static boolean isClassIdValid( int classId) {
 
         Connection conn = Main.dbConnection;
-
+      
         String sql = "SELECT COUNT(*) FROM Class WHERE id = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, classId);
@@ -101,6 +101,7 @@ public class Schedule
     }
 
 
+
     public static void addClassToSchedule(int scheduleId, int classId) {
         Connection conn = Main.dbConnection;
         String sql = "UPDATE Schedule SET classes = array_append(classes, ?) WHERE id = ?";
@@ -113,15 +114,18 @@ public class Schedule
                 preparedStatement.executeUpdate();
 
             } catch (SQLException e) {
+
                 e.printStackTrace();
                 System.out.println("ERROR adding to Schedule");
 
             }
+
         } else {
+
             System.out.println("ID error");
         }
 
-
     }
+
 }
 
