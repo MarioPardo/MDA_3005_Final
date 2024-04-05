@@ -39,5 +39,28 @@ public class Customer
         return -1; // Return -1 if an error occurs
     }
 
+    public static void addProfileToCustomer(int profileId, int customerId) {
+        Connection conn = Main.dbConnection;
+
+        String sql = "UPDATE Customer SET profile_ids = array_append(profile_ids, ?) WHERE id = ?";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, profileId);
+            pstmt.setInt(2, customerId);
+
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Profile added to customer successfully.");
+            } else {
+                System.out.println("Failed to add profile to customer.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     //Display all customer profiles
 }

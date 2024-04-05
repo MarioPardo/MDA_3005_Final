@@ -155,8 +155,8 @@ public class Main {
 
                     break;
                 case 2:
-                    Profile.addProfile(); //TODO change this func to return an id
-                    // TODO: Link this added profile to the customer
+                    int profileID = Profile.createProfile();
+                    Customer.addProfileToCustomer(profileID,custID);
                     break;
                 case 3:
                     // TODO: Select profile to go to
