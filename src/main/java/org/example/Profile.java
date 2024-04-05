@@ -5,40 +5,76 @@ import java.util.Scanner;
 
 public class Profile {
 
-    public static int addProfile(String fname, String lname, int age, float height, float weight, float bodyFatPercentage, String[] healthNotes, int weightGoal, Date goalDeadline) {
+    public static int createProfile() {
+        Scanner scanner = Main.scanner;
+        System.out.println("Enter your first name:");
+        String firstName = scanner.nextLine();
+
+        System.out.println("Enter your last name:");
+        String lastName = scanner.nextLine();
+
+        System.out.println("Enter your age:");
+        int age = scanner.nextInt();
+
+        System.out.println("Enter your weight:");
+        float weight = scanner.nextFloat();
+
+        System.out.println("Enter your height:");
+        float height = scanner.nextFloat();
+
+        System.out.println("Enter your body fat percentage:");
+        float bodyFatPercentage = scanner.nextFloat();
+        scanner.nextLine();
+
+        System.out.println("Enter your health conditions (comma-separated list):");
+        String[] healthConditions = scanner.nextLine().split(",");
+
+        System.out.println("Enter your goal weight:");
+        int goalWeight = scanner.nextInt();
+
+        System.out.println("Enter your goal date (YYYY-MM-DD):");
+        String goalDateStr = scanner.next();
+        java.sql.Date goalDate = java.sql.Date.valueOf(goalDateStr);
+
         String profileSql = "INSERT INTO Profile (first_name, last_name, goal_weight, goal_date, health_id, schedules) VALUES (?, ?, ?, ?,?,?)";
-       int healthDetails = Health.makeHealth(age, weight, height, bodyFatPercentage, healthNotes);
-       if(healthDetails == -1){
-           System.out.println("Health details have not been added. Please check the information you have entered.");
-           return -1;
-       }
+
+        int healthDetails = Health.makeHealth(age, weight, height, bodyFatPercentage, healthConditions);
+        if (healthDetails == -1) {
+            System.out.println("Health details have not been added. Please check the information you have entered.");
+            return -1; // Return -1 if health details cannot be created
+        }
+
         String currentDate = getCurrentDate();
         int scheduleId = Schedule.createSchedule(currentDate);
-        try{
+        try {
             Connection connection = Main.dbConnection;
             PreparedStatement profileStmt = connection.prepareStatement(profileSql, Statement.RETURN_GENERATED_KEYS);
 
-            profileStmt.setString(1, fname);
-            profileStmt.setString(2, lname);
-            profileStmt.setInt(3, weightGoal);
-            profileStmt.setDate(4, goalDeadline);
-            profileStmt.setInt(5,healthDetails);
+            profileStmt.setString(1, firstName);
+            profileStmt.setString(2, lastName);
+            profileStmt.setInt(3, goalWeight);
+            profileStmt.setDate(4, goalDate);
+            profileStmt.setInt(5, healthDetails);
             Array schedulesArray = connection.createArrayOf("INTEGER", new Integer[]{scheduleId}); // Wrap scheduleId in an array
             profileStmt.setArray(6, schedulesArray);
             profileStmt.executeUpdate();
 
             ResultSet generatedKeys = profileStmt.getGeneratedKeys();
             if (generatedKeys.next()) {
-                return generatedKeys.getInt(1);
+                int profileId = generatedKeys.getInt(1);
+                System.out.println("Profile created successfully with ID: " + profileId);
+                return profileId;
             } else {
                 System.out.println("Failed to retrieve generated keys for the newly created profile.");
-                return -1;
+                return -1; // Return -1 if generated keys cannot be retrieved
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            return -1;
+            return -1; // Return -1 if an SQL exception occurs
         }
     }
+
+
     public static void updateProfile(int profileId, String fname, String lname, int age, float height, float weight, float bodyFatPercentage, String[] healthNotes, int weightGoal, Date goalDeadline) {
         String profileSql = "UPDATE Profile SET first_name = ?, last_name = ?, goal_weight = ?, goal_date = ? WHERE id = ?";
         int existingHealthId = getHealthIdForProfile(profileId); // Retrieve existing health ID
@@ -86,40 +122,6 @@ public class Profile {
         java.util.Date date = new java.util.Date();
         return new java.sql.Date(date.getTime()).toString();
     }
-    public static void addProfile(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your first name:");
-        String firstName = scanner.nextLine();
-
-        System.out.println("Enter your last name:");
-        String lastName = scanner.nextLine();
-
-        System.out.println("Enter your age:");
-        int age = scanner.nextInt();
-
-        System.out.println("Enter your weight:");
-        float weight = scanner.nextFloat();
-
-        System.out.println("Enter your height:");
-        float height = scanner.nextFloat();
-
-        System.out.println("Enter your body fat percentage:");
-        float bodyFatPercentage = scanner.nextFloat();
-        scanner.nextLine();
-
-        System.out.println("Enter your health conditions (comma-separated list):");
-        String[] healthConditions = scanner.nextLine().split(",");
-
-        System.out.println("Enter your goal weight:");
-        int goalWeight = scanner.nextInt();
-
-        System.out.println("Enter your goal date (YYYY-MM-DD):");
-        String goalDateStr = scanner.next();
-        java.sql.Date goalDate = java.sql.Date.valueOf(goalDateStr);
-
-        Profile.addProfile(firstName, lastName, age, height, weight, bodyFatPercentage, healthConditions, goalWeight, goalDate);
-    }
-
 
     public static boolean isProfileExists(int profileID) {
         Connection conn = Main.dbConnection;
