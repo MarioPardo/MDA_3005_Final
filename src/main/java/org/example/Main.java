@@ -24,10 +24,10 @@ public class Main {
     {
         //<editor-fold desc=" Insert Info HERE!">
 
-        String databaseName = "**";
+        String databaseName = "***";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "**";
+        String password = "***";
         //</editor-fold
 
         try{
@@ -151,8 +151,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    // TODO: View customer all profiles
-
+                    Customer.viewCustomerProfiles(custID);
                     break;
                 case 2:
                     int profileID = Profile.createProfile();
