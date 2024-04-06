@@ -1,5 +1,6 @@
 package org.example;
 import java.sql.*;
+import java.util.Scanner;
 
 public class Health
 {
@@ -64,6 +65,25 @@ public class Health
             e.printStackTrace();
         }
     }
+    public static void updatehealthUI(int profileid){
+        int healthid = getHealthIdForProfile(profileid);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your age:");
+        int age = scanner.nextInt();
+        System.out.println("Enter your weight:");
+        float weight = scanner.nextFloat();
+        System.out.println("Enter your height:");
+        float height = scanner.nextFloat();
+        System.out.println("Enter your Body Fat percentage:");
+        float bodyfat = scanner.nextFloat();
+        scanner.nextLine();
+        System.out.println("Enter your health conditions (comma-separated list):");
+        String[] healthConditions = scanner.nextLine().split(",");
+
+        Health.updateHealth(healthid,age,weight,height,bodyfat,healthConditions);
+
+
+        }
 
 
 

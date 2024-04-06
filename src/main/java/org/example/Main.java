@@ -192,6 +192,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
+                    Schedule.viewSchedule(profileID);
                     // TODO: View schedule
                     break;
                 case 2:
@@ -209,6 +210,7 @@ public class Main {
                     System.out.println("Removing class from schedule...");
                     break;
                 case 6:
+                    Health.updatehealthUI(profileID);
                     // TODO : Change health
                     System.out.println("Changing health...");
                     break;
@@ -241,9 +243,10 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    //TODO : setWorkingHours();
+                    //TODO : setWorkingHours();(might chnage)
                     break;
                 case 2:
+                    Trainer.showTrainerClients(trainerID);
                     //TODO: showAllClients();
                     break;
                 case 3:
@@ -253,7 +256,8 @@ public class Main {
                     Trainer.createTrainerRoutine(trainerID);
                     break;
                 case 5:
-                    //TODO: Trainer.showAllRoutines();
+                    Trainer.showTrainerRoutines(trainerID);
+                    //TODO: Trainer.showAllRoutines(); (should take id of trainer)
                     break;
                 case 6:
                     Trainer.addRoutineToProfile();
@@ -295,6 +299,7 @@ public class Main {
                     System.out.println("Making a group class and adding to schedule...");
                     break;
                 case 3:
+                    FitnessClass.updateclassUI();
                     // TODO: Update a class
                     System.out.println("Updating a class...");
                     break;

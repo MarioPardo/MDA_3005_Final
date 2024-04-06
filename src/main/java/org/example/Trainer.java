@@ -168,4 +168,66 @@ public class Trainer
             e.printStackTrace();
         }
     }
+    public static void showTrainerClients(int trainerId) {
+        Connection conn = Main.dbConnection;
+        try {
+            String sql = "SELECT p.id, p.first_name, p.last_name " +
+                    "FROM Profile p " +
+                    "JOIN Trainer t ON p.id = ANY(t.clients) " +
+                    "WHERE t.id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, trainerId);
+                ResultSet rs = pstmt.executeQuery();
+                boolean foundClients = false;
+                System.out.println("Clients of Trainer with ID " + trainerId + ":");
+                while (rs.next()) {
+                    foundClients = true;
+                    int clientId = rs.getInt("id");
+                    String firstName = rs.getString("first_name");
+                    String lastName = rs.getString("last_name");
+                    System.out.println("Client ID: " + clientId + ", Name: " + firstName + " " + lastName);
+                }
+                if (!foundClients) {
+                    System.out.println("No clients found for Trainer with ID " + trainerId);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR: An error occurred while fetching clients.");
+            e.printStackTrace();
+        }
+    }
+    public static void showTrainerRoutines(int trainerId) {
+        Connection conn = Main.dbConnection;
+        try {
+            String sql = "SELECT r.id AS routine_id, r.name AS routine_name, r.exercises AS exercises " +
+                    "FROM Routine r " +
+                    "JOIN Trainer t ON r.id = ANY(t.routines) " +
+                    "WHERE t.id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, trainerId);
+                ResultSet rs = pstmt.executeQuery();
+                System.out.println("Routines and Exercises of Trainer with ID " + trainerId + ":");
+                boolean foundRoutines = false;
+                while (rs.next()) {
+                    foundRoutines = true;
+                    int routineId = rs.getInt("routine_id");
+                    String routineName = rs.getString("routine_name");
+                    Array exercisesArray = rs.getArray("exercises");
+                    String[] exercises = (String[]) exercisesArray.getArray();
+                    System.out.println("Routine ID: " + routineId + ", Name: " + routineName);
+                    System.out.println("Exercises:");
+                    for (String exercise : exercises) {
+                        System.out.println("- " + exercise);
+                    }
+                }
+                if (!foundRoutines) {
+                    System.out.println("Trainer with ID " + trainerId + " has no routines.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("An error occurred while fetching routines.");
+            e.printStackTrace();
+        }
+    }
+
 }
