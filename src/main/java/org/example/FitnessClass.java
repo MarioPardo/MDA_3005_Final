@@ -2,8 +2,11 @@ package org.example;
 import java.sql.*;
 import java.util.Scanner;
 
+import java.sql.*;
+
 public class FitnessClass
 {
+
     public static int createClass(Date date, Time time, boolean isGroup, Integer roomNumber, int trainerId, Integer[] participants) {
         String sql = "INSERT INTO Class (date, time, is_group, room_number, trainer_id, participants) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
@@ -117,3 +120,5 @@ public class FitnessClass
         updateClass(classId, date, time, isGroup, roomNumber, trainerId, participants);
     }
 }
+
+
