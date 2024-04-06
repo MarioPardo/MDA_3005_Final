@@ -23,8 +23,7 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-
-        String databaseName = "***";
+        String databaseName = "**";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
         String password = "***";
@@ -209,7 +208,8 @@ public class Main {
                     System.out.println("Removing class from schedule...");
                     break;
                 case 6:
-                    // TODO : Change health
+                    Health.updatehealthUI(profileID);
+                    
                     System.out.println("Changing health...");
                     break;
                 case 0:
@@ -244,7 +244,8 @@ public class Main {
                     //TODO : setWorkingHours();
                     break;
                 case 2:
-                    //TODO: showAllClients();
+                    Trainer.showTrainerClients(trainerID);
+
                     break;
                 case 3:
                    // TODO: findGymProfileByName();
@@ -253,7 +254,7 @@ public class Main {
                     Trainer.createTrainerRoutine(trainerID);
                     break;
                 case 5:
-                    //TODO: Trainer.showAllRoutines();
+                    Trainer.showTrainerRoutines(trainerID);
                     break;
                 case 6:
                     Trainer.addRoutineToProfile();
@@ -295,7 +296,7 @@ public class Main {
                     System.out.println("Making a group class and adding to schedule...");
                     break;
                 case 3:
-                    // TODO: Update a class
+                    FitnessClass.updateclassUI();
                     System.out.println("Updating a class...");
                     break;
                 case 4:
