@@ -97,5 +97,40 @@ public class Customer {
         }
     }
 
+    public static int validateProfileOwnership(int customerId)
+    {
+        Connection conn = Main.dbConnection;
+        Scanner scanner = Main.scanner;
+
+        String customerSql = "SELECT profile_ids FROM Customer WHERE id = ?";
+        try {
+            PreparedStatement customerStmt = conn.prepareStatement(customerSql);
+            customerStmt.setInt(1, customerId);
+            ResultSet customerRs = customerStmt.executeQuery();
+
+            if (customerRs.next()) {
+                Array profileIdsArray = customerRs.getArray("profile_ids");
+                Integer[] profileIds = (Integer[]) profileIdsArray.getArray();
+
+                System.out.println("Enter the profile ID:");
+                int inputProfileId = scanner.nextInt();
+
+                for (int profileId : profileIds) {
+                    if (inputProfileId == profileId) {
+                        return inputProfileId; // Return the input profile ID if it belongs to the customer
+                    }
+                }
+
+                System.out.println("Error: This profile does not belong to the customer.");
+                return -1;
+            } else {
+                System.out.println("Error: Customer not found.");
+                return -1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
 }
