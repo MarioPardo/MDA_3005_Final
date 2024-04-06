@@ -26,7 +26,7 @@ public class Main {
         String databaseName = "**";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "**";
+        String password = "***";
         //</editor-fold
 
         try{
@@ -150,12 +150,11 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    // TODO: View customer all profiles
-
+                    Customer.viewCustomerProfiles(custID);
                     break;
                 case 2:
-                    Profile.addProfile(); //TODO change this func to return an id
-                    // TODO: Link this added profile to the customer
+                    int profileID = Profile.createProfile();
+                    Customer.addProfileToCustomer(profileID,custID);
                     break;
                 case 3:
                     // TODO: Select profile to go to
