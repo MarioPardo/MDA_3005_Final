@@ -23,10 +23,10 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-        String databaseName = "finalproject";
+        String databaseName = "**";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "xsixteen123";
+        String password = "**";
         //</editor-fold
 
         try{
@@ -192,7 +192,6 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    Schedule.viewSchedule(profileID);
                     // TODO: View schedule
                     break;
                 case 2:
@@ -211,7 +210,7 @@ public class Main {
                     break;
                 case 6:
                     Health.updatehealthUI(profileID);
-                    // TODO : Change health
+                    
                     System.out.println("Changing health...");
                     break;
                 case 0:
@@ -243,11 +242,11 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    //TODO : setWorkingHours();(might chnage)
+                    //TODO : setWorkingHours();
                     break;
                 case 2:
                     Trainer.showTrainerClients(trainerID);
-                    //TODO: showAllClients();
+
                     break;
                 case 3:
                    // TODO: findGymProfileByName();
@@ -257,7 +256,6 @@ public class Main {
                     break;
                 case 5:
                     Trainer.showTrainerRoutines(trainerID);
-                    //TODO: Trainer.showAllRoutines(); (should take id of trainer)
                     break;
                 case 6:
                     Trainer.addRoutineToProfile();
@@ -300,7 +298,6 @@ public class Main {
                     break;
                 case 3:
                     FitnessClass.updateclassUI();
-                    // TODO: Update a class
                     System.out.println("Updating a class...");
                     break;
                 case 4:
