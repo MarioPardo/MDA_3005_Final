@@ -214,9 +214,9 @@ public class Trainer
                     Array exercisesArray = rs.getArray("exercises");
                     String[] exercises = (String[]) exercisesArray.getArray();
                     System.out.println("Routine ID: " + routineId + ", Name: " + routineName);
-                    System.out.println("Exercises:");
+                    System.out.println("    Exercises:");
                     for (String exercise : exercises) {
-                        System.out.println("- " + exercise);
+                        System.out.println("    - " + exercise);
                     }
                 }
                 if (!foundRoutines) {

@@ -11,9 +11,8 @@ public class Routine
         Scanner scanner = Main.scanner;
 
         System.out.print("Enter the name of the routine: ");
-        String routineName = scanner.nextLine();
-
         scanner.nextLine();
+        String routineName = scanner.nextLine();
 
         System.out.print("Enter exercises as a comma-separated list: ");
         String exercisesInput = scanner.nextLine();

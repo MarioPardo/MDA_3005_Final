@@ -48,7 +48,8 @@ public class Main {
         scanner = new Scanner(System.in);
         System.out.println(" *** Welcome to the MDA Fitness Club  *** ");
 
-        while (true) {
+        while (true)
+        {
             System.out.println("Select an option:");
             System.out.println("1. Customer Sign In");
             System.out.println("2. Trainer Sign In");
@@ -89,11 +90,19 @@ public class Main {
                     break;
                 case 0:
                     System.out.println("Exiting application");
+
+                    try {dbConnection.close();
+                    } catch(Exception e) {
+                        System.out.println("Error closing connection");
+                    }
+
+
                     return;
                 default:
                     System.out.println("Invalid choice, please try again.");
             }
         }
+
 
 
     }
