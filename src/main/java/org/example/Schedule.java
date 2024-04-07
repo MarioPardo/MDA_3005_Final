@@ -100,8 +100,6 @@ public class Schedule
         return false;
     }
 
-
-
     public static void addClassToSchedule(int scheduleId, int classId) {
         Connection conn = Main.dbConnection;
         String sql = "UPDATE Schedule SET classes = array_append(classes, ?) WHERE id = ?";
@@ -125,6 +123,39 @@ public class Schedule
             System.out.println("ID error");
         }
 
+    }
+
+    public static void ViewAllGroupClasses(String date) {
+        System.out.println("Showing group classes for " + date);
+
+        Connection conn = Main.dbConnection;
+
+        String classSql = "SELECT id, time, room_number, trainer_id FROM Class WHERE date = ? AND is_group = TRUE";
+        try {
+            PreparedStatement classStmt = conn.prepareStatement(classSql);
+            classStmt.setDate(1, java.sql.Date.valueOf(date));
+
+            ResultSet classRs = classStmt.executeQuery();
+
+            if (!classRs.isBeforeFirst()) {
+                System.out.println("NO GROUP CLASSES FOR THE DAY");
+            } else {
+                System.out.println("Group Classes for " + date + ":");
+                while (classRs.next()) {
+                    Time classTime = classRs.getTime("time");
+                    String formattedTime = classTime.toString().substring(0, 5);
+                    int roomNumber = classRs.getInt("room_number");
+                    int classID = classRs.getInt("id");
+
+                    String roomStr = (roomNumber != 0) ? String.valueOf(roomNumber) : "NONE";
+                    String trainerName = FitnessClass.getTrainerForClass(classRs.getInt("id"));
+
+                    System.out.println("Time: " + formattedTime + ", Room #: " + roomStr + ", Trainer: " + trainerName + ", Class ID: " + classID);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

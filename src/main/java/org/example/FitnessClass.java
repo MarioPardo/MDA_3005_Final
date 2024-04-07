@@ -14,10 +14,7 @@ public class FitnessClass
 
             Connection conn = Main.dbConnection;
             PreparedStatement statement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-            // Prepare the SQL statement
 
-
-            // Set values for parameters
             statement.setDate(1, date);
             statement.setTime(2, time);
             statement.setBoolean(3, isGroup);
@@ -28,7 +25,6 @@ public class FitnessClass
             statement.setInt(5, trainerId);
             statement.setArray(6, conn.createArrayOf("INTEGER", participants));
 
-            // Execute the statement
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("A new row has been inserted successfully.");
@@ -119,6 +115,31 @@ public class FitnessClass
         }
         updateClass(classId, date, time, isGroup, roomNumber, trainerId, participants);
     }
+
+    public static String getTrainerForClass(int classID)
+    {
+        Connection conn = Main.dbConnection;
+
+        String trainerSql = "SELECT first_name, last_name FROM Trainer WHERE id = (SELECT trainer_id FROM Class WHERE id = ?)";
+        try {
+            PreparedStatement trainerStmt = conn.prepareStatement(trainerSql);
+            trainerStmt.setInt(1, classID);
+            ResultSet trainerRs = trainerStmt.executeQuery();
+
+            if (trainerRs.next()) {
+                String firstName = trainerRs.getString("first_name");
+                String lastName = trainerRs.getString("last_name");
+                return firstName + " " + lastName;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "UNKNOWN TRAINER";
+    }
+
+
+
+
 }
 
 

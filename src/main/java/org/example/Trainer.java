@@ -34,7 +34,6 @@ public class Trainer
     }
 
 
-
     public static void createTrainerRoutine(int trainerID)
     {
         int routineID = Routine.createRoutine();
