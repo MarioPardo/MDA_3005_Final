@@ -138,5 +138,44 @@ public class Profile {
             return false;
         }
     }
+
+    public static int getProfileScheduleId(int profileId)
+    {
+        Connection conn = Main.dbConnection;
+
+        String sql = "SELECT schedules FROM Profile WHERE id = ?";
+        try ( PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+            pstmt.setInt(1, profileId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                Array schedulesArray = rs.getArray("schedules");
+                Integer[] schedules = (Integer[]) schedulesArray.getArray();
+                return schedules[0]; //for now profile only has one sched
+            } else {
+                System.out.println("Profile not found.");
+                return -1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+
+    public static void addGroupClassToSchedule(int profID)
+    {
+        Scanner scanner = Main.scanner;
+
+        System.out.println("Enter the class ID you'd like to add to your schedule");
+        int classID = scanner.nextInt();
+
+        int schedID = getProfileScheduleId(profID);
+
+        Schedule.addClassToSchedule(schedID,classID);
+
+    }
+
+
 }
 

@@ -229,4 +229,25 @@ public class Trainer
         }
     }
 
+    public static String getTrainerName(int trainerId) {
+        String trainerName = "NONE";
+
+        Connection conn = Main.dbConnection;
+
+        String sql = "SELECT first_name, last_name FROM Trainer WHERE id = ?";
+        try (
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, trainerId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                String firstName = rs.getString("first_name");
+                String lastName = rs.getString("last_name");
+                trainerName = firstName + " " + lastName;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return trainerName;
+    }
+
 }

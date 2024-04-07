@@ -26,40 +26,56 @@ public class Schedule
     }
 
     public static void viewSchedule(int accountId) {
+
+        Connection connection = Main.dbConnection;
+
         String classSql = "SELECT c.* " +
                 "FROM Profile p " +
                 "JOIN Schedule s ON p.schedules @> ARRAY[s.id] " +
                 "JOIN Class c ON s.classes @> ARRAY[c.id] " +
                 "WHERE p.id = ?";
 
-        try (Connection connection = Main.dbConnection;
-             PreparedStatement classStmt = connection.prepareStatement(classSql)) {
+        try (PreparedStatement classStmt = connection.prepareStatement(classSql)) {
             classStmt.setInt(1, accountId);
             ResultSet rs = classStmt.executeQuery();
 
+            boolean classesFound = false;
+
+            int classNum = 1;
             while (rs.next()) {
+                classesFound = true;
+
                 int classId = rs.getInt("id");
                 Date date = rs.getDate("date");
                 Time time = rs.getTime("time");
+                String formattedTime = time.toString().substring(0, 5);
                 boolean isGroup = rs.getBoolean("is_group");
                 Integer roomNumber = rs.getObject("room_number", Integer.class); // Handle NULL room numbers
                 int trainerId = rs.getInt("trainer_id");
-                // Retrieve other class details as needed
 
-                // Print class details
-                System.out.println("Class Information:");
-                System.out.println("Class ID: " + classId);
-                System.out.println("Date: " + date);
-                System.out.println("Time: " + time);
-                System.out.println("Is Group: " + isGroup);
+                if(isGroup)
+                {
+                    System.out.println("\n Class " + classNum++ +" :");
+                    System.out.println("   Group Class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + "  ID: " + classId );
+                }else
+                {
+                    System.out.println("\n Class " + classNum++ +" :");
+                    System.out.println("   Personal Training class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + "  ID: " + classId  );
+                }
+
                 if (roomNumber != null) {
-                    System.out.println("Room Number: " + roomNumber);
+                    System.out.println("     Room Number: " + roomNumber);
                 } else {
                     System.out.println("Room Number: N/A");
                 }
-                System.out.println("Trainer ID: " + trainerId);
-                System.out.println("\n");
+
+                System.out.println(" ");
             }
+
+            if (!classesFound) {
+                System.out.println("NO CLASSES IN SCHEDULE");
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -125,9 +141,9 @@ public class Schedule
 
     }
 
-    public static void ViewAllGroupClasses(String date) {
+    public static void ViewAllGroupClasses(String date)
+    {
         System.out.println("Showing group classes for " + date);
-
         Connection conn = Main.dbConnection;
 
         String classSql = "SELECT id, time, room_number, trainer_id FROM Class WHERE date = ? AND is_group = TRUE";

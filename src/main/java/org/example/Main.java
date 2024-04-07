@@ -19,7 +19,6 @@ public class Main {
 
         launch();
 
-
     }
 
     public static boolean setDbConnection()
@@ -198,13 +197,13 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    // TODO: View schedule
+                    Schedule.viewSchedule(profileID);
                     break;
                 case 2:
                     Schedule.ViewAllGroupClasses(getCurrentDate()); //since only doing for current day
                     break;
                 case 3:
-                    // TODO: Add group class to schedule
+                    Profile.addGroupClassToSchedule(profileID);
                     break;
                 case 4:
                     // TODO: Book personal training class
