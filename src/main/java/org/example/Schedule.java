@@ -4,8 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Schedule
-{
+public class Schedule {
 
     public static int createSchedule(String date) {
         Connection conn = Main.dbConnection;
@@ -81,7 +80,7 @@ public class Schedule
         }
     }
 
-    private static boolean isScheduleIdValid( int scheduleId) {
+    private static boolean isScheduleIdValid(int scheduleId) {
         Connection conn = Main.dbConnection;
         String sql = "SELECT COUNT(*) FROM Schedule WHERE id = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -98,10 +97,10 @@ public class Schedule
     }
 
     // check if classId exists in the Class table
-    private static boolean isClassIdValid( int classId) {
+    private static boolean isClassIdValid(int classId) {
 
         Connection conn = Main.dbConnection;
-      
+
         String sql = "SELECT COUNT(*) FROM Class WHERE id = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, classId);
@@ -115,6 +114,7 @@ public class Schedule
         }
         return false;
     }
+
 
     public static void addClassToSchedule(int scheduleId, int classId) {
         Connection conn = Main.dbConnection;
@@ -174,5 +174,51 @@ public class Schedule
         }
     }
 
+    public static boolean isClassInSchedule(int scheduleId, int classId) {
+
+        Connection connection = Main.dbConnection;
+
+        String sql = "SELECT id FROM Schedule WHERE id = ? AND ? = ANY(classes)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, scheduleId);
+            preparedStatement.setInt(2, classId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next(); // Returns true if the class ID exists in the schedule
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false in case of an exception
+        }
+    }
+
+
+    public static void removeClassFromSchedule(int scheduleId, int classIdToRemove) {
+        Connection connection = Main.dbConnection;
+
+        String sql = "UPDATE Schedule SET classes = array_remove(classes, ?) WHERE id = ?";
+        boolean check;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, classIdToRemove);
+            preparedStatement.setInt(2, scheduleId);
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                System.out.println("Schedule ID not found. No rows updated.");
+            }
+            else if(! (check = isClassInSchedule(scheduleId,classIdToRemove)))
+            {
+                System.out.println("Class ID not found. No rows updated.");
+
+            }
+            else {
+                System.out.println("Class removed from schedule successfully.");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
