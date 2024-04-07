@@ -1,6 +1,8 @@
 package org.example;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -199,7 +201,7 @@ public class Main {
                     // TODO: View schedule
                     break;
                 case 2:
-                    // TODO: View all available group classes
+                    Schedule.ViewAllGroupClasses(getCurrentDate()); //since only doing for current day
                     break;
                 case 3:
                     // TODO: Add group class to schedule
@@ -355,4 +357,13 @@ public class Main {
             }
         }
     }
+
+
+    public static String getCurrentDate()
+    {
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return today.format(formatter);
+    }
+
 }
