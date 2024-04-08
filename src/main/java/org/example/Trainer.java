@@ -1,7 +1,10 @@
 package org.example;
 
 import java.sql.*;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Trainer
@@ -324,5 +327,52 @@ public class Trainer
         return trainerExists;
     }
 
+    public static LocalTime[] getTrainerWorkingHours(int trainerId)
+    {
+        Connection connection = Main.dbConnection;
+        LocalTime[] workingHours = null;
+        try (PreparedStatement statement = connection.prepareStatement("SELECT working_hours FROM Trainer WHERE id = ?")) {
+            statement.setInt(1, trainerId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                Array workingHoursArray = resultSet.getArray("working_hours");
+                String[] workingHoursStrings = (String[]) workingHoursArray.getArray();
+                workingHours = new LocalTime[2];
+                workingHours[0] = LocalTime.parse(workingHoursStrings[0]);
+                workingHours[1] = LocalTime.parse(workingHoursStrings[1]);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return workingHours;
+    }
+
+    public static List<LocalTime[]> getTrainerBookedHours(int trainerId)
+    {
+        List<LocalTime[]> bookedHours = new ArrayList<>();
+        Connection connection = Main.dbConnection;
+        try (
+             PreparedStatement statement = connection.prepareStatement("SELECT time FROM Class WHERE trainer_id = ?")) {
+            statement.setInt(1, trainerId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                LocalTime startTime = resultSet.getTime("time").toLocalTime();
+                LocalTime endTime = startTime.plusHours(1); // End time is start time + 1 hour
+                bookedHours.add(new LocalTime[]{startTime, endTime});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookedHours;
+    }
+
+
+    public static boolean checkTimeOverlap(LocalTime startTime1, LocalTime endTime1, LocalTime startTime2, LocalTime endTime2) {
+        return startTime1.isBefore(endTime2) && endTime1.isAfter(startTime2);
+    }
+
+    public static boolean checkWithinWorkingHours(LocalTime time, LocalTime[] workingHours) {
+        return time.isAfter(workingHours[0]) && time.isBefore(workingHours[1]);
+    }
 
 }

@@ -1,5 +1,9 @@
 package org.example;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -206,6 +210,7 @@ public class Profile {
         //select a trainer to book
         System.out.println("Enter the Trainer ID you'd like to book with");
         int trainerID = scanner.nextInt();
+        scanner.nextLine();
 
         if(!Trainer.checkTrainerExists(trainerID))
         {
@@ -213,9 +218,38 @@ public class Profile {
             return;
         }
 
-
         //select an hour slot
-            //ensure it's ok
+        LocalTime time = null;
+        System.out.println("Enter a time in the format HH:MM:");
+        String inputTime = scanner.nextLine();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        try {
+            time = LocalTime.parse(inputTime, formatter);
+            System.out.println("Time entered: " + time);
+        } catch (Exception e) {
+            System.out.println("Invalid time format. Please enter in HH:MM format.");
+            return;
+        }
+
+        //ensure the time slot works
+        LocalTime[] workingHours = Trainer.getTrainerWorkingHours(trainerID);
+        List<LocalTime[]> bookedHours = Trainer.getTrainerBookedHours(trainerID);
+
+        if(!Trainer.checkWithinWorkingHours(time, workingHours))
+        {
+            System.out.println("This time does not fit within the trainer's working hours");
+            return;
+        }
+
+        for (LocalTime[] hours : bookedHours) {
+            if (Trainer.checkTimeOverlap(time, time.plusHours(1), hours[0], hours[1])) {
+                System.out.println("This time overlaps with a booked class");
+                return;
+            }
+        }
+
+        System.out.println("This Class Time Works!");
 
         //create class
             //link to trainer
