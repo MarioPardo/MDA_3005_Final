@@ -250,4 +250,79 @@ public class Trainer
         return trainerName;
     }
 
+    public static void printTrainerSchedule(int trainerId) {
+        Connection conn = Main.dbConnection;
+        try {
+            String trainerSql = "SELECT first_name, last_name, working_hours FROM Trainer WHERE id = ?";
+            PreparedStatement trainerStmt = conn.prepareStatement(trainerSql);
+            trainerStmt.setInt(1, trainerId);
+            ResultSet trainerRs = trainerStmt.executeQuery();
+
+            // Print trainer's name and working hours
+            if (trainerRs.next()) {
+                String firstName = trainerRs.getString("first_name");
+                String lastName = trainerRs.getString("last_name");
+                Array workingHoursArray = trainerRs.getArray("working_hours");
+                String[] workingHours = (String[]) workingHoursArray.getArray();
+
+                System.out.println("Trainer: " + firstName + " " + lastName + "  with ID:" + trainerId);
+                System.out.print("Working Hours: " + workingHours[0] + " - " + workingHours[1] + "\n");
+            }
+
+            // Retrieve classes for the trainer
+            String classSql = "SELECT id, date, time, is_group, room_number, participants FROM Class WHERE trainer_id = ?";
+            PreparedStatement classStmt = conn.prepareStatement(classSql);
+            classStmt.setInt(1, trainerId);
+            ResultSet classRs = classStmt.executeQuery();
+
+            // Print classes
+            while (classRs.next()) {
+                int classId = classRs.getInt("id");
+                Date classDate = classRs.getDate("date");
+                Time classTime = classRs.getTime("time");
+                boolean isGroup = classRs.getBoolean("is_group");
+                Array participantsArray = classRs.getArray("participants");
+
+                Integer[] participants = null;
+                if(participantsArray != null)
+                     participants = (Integer[]) participantsArray.getArray();
+
+                if (isGroup) {
+                    System.out.println("    * Teaching group class at " + classTime);
+                } else {
+                    System.out.print("    * Personal training class on " + classDate.toString() + " at " + classTime);
+                    // Print participants' names
+                    if(participants != null)
+                        for (int participantId : participants) {
+                            String participantName = getParticipantName(participantId);
+                            System.out.print("  | with client " + participantName + "\n");
+                        }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getParticipantName(int participantId) {
+        Connection conn = Main.dbConnection;
+        String participantName = "";
+        try {
+            String participantSql = "SELECT first_name, last_name FROM Profile WHERE id = ?";
+            PreparedStatement participantStmt = conn.prepareStatement(participantSql);
+            participantStmt.setInt(1, participantId);
+            ResultSet participantRs = participantStmt.executeQuery();
+            if (participantRs.next()) {
+                String firstName = participantRs.getString("first_name");
+                String lastName = participantRs.getString("last_name");
+                participantName = firstName + " " + lastName;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception here (printing or logging)
+            participantName = "N/A"; // Set a default value for participantName
+        }
+        return participantName;
+    }
+
 }

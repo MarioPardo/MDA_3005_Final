@@ -162,7 +162,6 @@ public class Profile {
         }
     }
 
-
     public static void addGroupClassToSchedule(int profID)
     {
         Scanner scanner = Main.scanner;
@@ -176,6 +175,22 @@ public class Profile {
 
     }
 
+
+    public static void BookPTClass(int profID)
+    {
+        //TODO get all trainerIDs and do this in a for loop
+        Trainer.printTrainerSchedule(1);
+
+        //select a trainer to book
+
+        //select an hour slot
+            //ensure it's ok
+
+        //create class
+            //link to trainer
+            //link to link to profile
+
+    }
 
 }
 

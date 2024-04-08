@@ -25,10 +25,10 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-        String databaseName = "***";
+        String databaseName = "3005_FinalProj";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "***";
+        String password = "0937pipe";
 
         //</editor-fold
 
@@ -218,8 +218,8 @@ public class Main {
                     Profile.addGroupClassToSchedule(profileID);
                     break;
                 case 4:
-                    // TODO: Book personal training class
                     System.out.println("Booking personal training class...");
+                    Profile.BookPTClass(profileID);
                     break;
                 case 5:
                     // TODO: Remove class from schedule
