@@ -222,16 +222,12 @@ public class Main {
                     // TODO: Remove class from schedule
                     System.out.println("Removing class from schedule...give us the class you'd like to remove!");
 
-                    System.out.print("Enter your schedule id ");
-                    int schedId = scanner.nextInt();
-                    scanner.nextLine();
-
+                    int schId = Profile.getProfileScheduleId( profileID);
                     System.out.print("Enter your class id ");
                     int classId = scanner.nextInt();
                     scanner.nextLine();
 
-                    Schedule schedule = new Schedule();
-                    schedule.removeClassFromSchedule(schedId,classId);
+                    Schedule.removeClassFromSchedule(schId,classId);
 
                     break;
                 case 6:
