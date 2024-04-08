@@ -4,6 +4,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.jar.Manifest;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -28,6 +29,7 @@ public class Main {
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
         String password = "***";
+
         //</editor-fold
 
         try{
@@ -67,6 +69,7 @@ public class Main {
                         break;
 
                     CustomerUI(custID);
+
 
                     break;
                 case 2:
@@ -353,14 +356,17 @@ public class Main {
 
             switch (choice) {
                 case 1:
+                    Maintenance.viewAllRepairTickets();
                     // TODO: View all repair tickets
                     System.out.println("Viewing all repair tickets...");
                     break;
                 case 2:
+                    Maintenance.addRepairTicketUI();
                     // TODO: Add repair ticket
                     System.out.println("Adding repair ticket...");
                     break;
                 case 3:
+                    Maintenance.removeRepairTicketUI();
                     // TODO: Remove repair ticket
                     System.out.println("Removing repair ticket...");
                     break;
