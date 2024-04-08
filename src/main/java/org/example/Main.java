@@ -220,7 +220,15 @@ public class Main {
                     break;
                 case 5:
                     // TODO: Remove class from schedule
-                    System.out.println("Removing class from schedule...");
+                    System.out.println("Removing class from schedule...give us the class you'd like to remove!");
+
+                    int schId = Profile.getProfileScheduleId( profileID);
+                    System.out.print("Enter your class id ");
+                    int classId = scanner.nextInt();
+                    scanner.nextLine();
+
+                    Schedule.removeClassFromSchedule(schId,classId);
+
                     break;
                 case 6:
                     Health.updatehealthUI(profileID);
