@@ -176,12 +176,43 @@ public class Profile {
     }
 
 
+    public static String getProfileName(int profileId) {
+        Connection conn = Main.dbConnection;
+        String participantName = "";
+        try {
+            String participantSql = "SELECT first_name, last_name FROM Profile WHERE id = ?";
+            PreparedStatement participantStmt = conn.prepareStatement(participantSql);
+            participantStmt.setInt(1, profileId);
+            ResultSet participantRs = participantStmt.executeQuery();
+            if (participantRs.next()) {
+                String firstName = participantRs.getString("first_name");
+                String lastName = participantRs.getString("last_name");
+                participantName = firstName + " " + lastName;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception here (printing or logging)
+            participantName = "N/A"; // Set a default value for participantName
+        }
+        return participantName;
+    }
+
     public static void BookPTClass(int profID)
     {
+        Scanner scanner = Main.scanner;
+
         //TODO get all trainerIDs and do this in a for loop
         Trainer.printTrainerSchedule(1);
 
         //select a trainer to book
+        System.out.println("Enter the Trainer ID you'd like to book with");
+        int trainerID = scanner.nextInt();
+
+        if(!Trainer.checkTrainerExists(trainerID))
+        {
+            System.out.println("Invalid Trainer ID! ");
+            return;
+        }
+
 
         //select an hour slot
             //ensure it's ok

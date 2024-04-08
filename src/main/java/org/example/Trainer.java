@@ -280,6 +280,7 @@ public class Trainer
                 int classId = classRs.getInt("id");
                 Date classDate = classRs.getDate("date");
                 Time classTime = classRs.getTime("time");
+                Time endTime = Time.valueOf(classTime.toLocalTime().plusHours(1));
                 boolean isGroup = classRs.getBoolean("is_group");
                 Array participantsArray = classRs.getArray("participants");
 
@@ -288,14 +289,14 @@ public class Trainer
                      participants = (Integer[]) participantsArray.getArray();
 
                 if (isGroup) {
-                    System.out.println("    * Teaching group class at " + classTime);
+                    System.out.println("    * Teaching group class at " + classTime.toString().substring(0, 5) + " - " + endTime.toString().substring(0, 5));
                 } else {
-                    System.out.print("    * Personal training class on " + classDate.toString() + " at " + classTime);
+                    System.out.print("    * Personal training class on " + classDate.toString() + " at " + classTime.toString().substring(0, 5) + " - " + endTime.toString().substring(0, 5));
                     // Print participants' names
                     if(participants != null)
                         for (int participantId : participants) {
-                            String participantName = getParticipantName(participantId);
-                            System.out.print("  | with client " + participantName + "\n");
+                            String participantName = Profile.getProfileName(participantId);
+                            System.out.print(" with client " + participantName + "\n");
                         }
                 }
             }
@@ -305,24 +306,23 @@ public class Trainer
         }
     }
 
-    public static String getParticipantName(int participantId) {
+    public static boolean checkTrainerExists(int trainerId) {
         Connection conn = Main.dbConnection;
-        String participantName = "";
+        boolean trainerExists = false;
         try {
-            String participantSql = "SELECT first_name, last_name FROM Profile WHERE id = ?";
-            PreparedStatement participantStmt = conn.prepareStatement(participantSql);
-            participantStmt.setInt(1, participantId);
-            ResultSet participantRs = participantStmt.executeQuery();
-            if (participantRs.next()) {
-                String firstName = participantRs.getString("first_name");
-                String lastName = participantRs.getString("last_name");
-                participantName = firstName + " " + lastName;
+            String sql = "SELECT COUNT(*) AS count FROM Trainer WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, trainerId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("count");
+                trainerExists = count > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace(); // Handle the exception here (printing or logging)
-            participantName = "N/A"; // Set a default value for participantName
         }
-        return participantName;
+        return trainerExists;
     }
+
 
 }
