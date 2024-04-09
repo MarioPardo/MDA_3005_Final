@@ -47,7 +47,9 @@ public class Schedule {
                 int classId = rs.getInt("id");
                 Date date = rs.getDate("date");
                 Time time = rs.getTime("time");
+                Time endTime = Time.valueOf(time.toLocalTime().plusHours(1));
                 String formattedTime = time.toString().substring(0, 5);
+                String formattedEndTime = endTime.toString().substring(0, 5);
                 boolean isGroup = rs.getBoolean("is_group");
                 Integer roomNumber = rs.getObject("room_number", Integer.class); // Handle NULL room numbers
                 int trainerId = rs.getInt("trainer_id");
@@ -55,18 +57,16 @@ public class Schedule {
                 if(isGroup)
                 {
                     System.out.println("\n Class " + classNum++ +" :");
-                    System.out.println("   Group Class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + "  ID: " + classId );
+                    System.out.println("   Group Class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + " - " + endTime + "  ID: " + classId );
                 }else
                 {
                     System.out.println("\n Class " + classNum++ +" :");
-                    System.out.println("   Personal Training class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + "  ID: " + classId  );
+                    System.out.println("   Personal Training class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + " - " + endTime +"  ID: " + classId  );
                 }
 
-                if (roomNumber != null) {
+                if (roomNumber != null)
                     System.out.println("     Room Number: " + roomNumber);
-                } else {
-                    System.out.println("Room Number: N/A");
-                }
+
 
                 System.out.println(" ");
             }
@@ -80,7 +80,7 @@ public class Schedule {
         }
     }
 
-    private static boolean isScheduleIdValid(int scheduleId) {
+    public static boolean isScheduleIdValid(int scheduleId) {
         Connection conn = Main.dbConnection;
         String sql = "SELECT COUNT(*) FROM Schedule WHERE id = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -97,7 +97,7 @@ public class Schedule {
     }
 
     // check if classId exists in the Class table
-    private static boolean isClassIdValid(int classId) {
+    public static boolean isClassIdValid(int classId) {
 
         Connection conn = Main.dbConnection;
 
@@ -131,11 +131,13 @@ public class Schedule {
 
                 e.printStackTrace();
                 System.out.println("ERROR adding to Schedule");
-
             }
-
         } else {
+            if(!isClassIdValid(classId))
+                System.out.println("INVALID CLASS");
 
+            if(!isScheduleIdValid(scheduleId))
+                System.out.println("INVALID SCHED");
             System.out.println("ID error");
         }
 
@@ -191,7 +193,6 @@ public class Schedule {
             return false; // Return false in case of an exception
         }
     }
-
 
     public static void removeClassFromSchedule(int scheduleId, int classIdToRemove) {
         Connection connection = Main.dbConnection;

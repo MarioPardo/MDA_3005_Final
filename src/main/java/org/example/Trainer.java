@@ -327,6 +327,8 @@ public class Trainer
         return trainerExists;
     }
 
+
+
     public static LocalTime[] getTrainerWorkingHours(int trainerId)
     {
         Connection connection = Main.dbConnection;
@@ -366,6 +368,36 @@ public class Trainer
         return bookedHours;
     }
 
+    public static int getTrainerScheduleID(int trainerID) {
+        Connection conn = Main.dbConnection;
+        int scheduleID = -1; // Default value if no schedule is found
+
+        String sql = "SELECT schedules FROM Trainer WHERE id = ?";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, trainerID);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                Integer[] schedulesArray = (Integer[]) rs.getArray("schedules").getArray();
+                if (schedulesArray.length > 0) {
+                    scheduleID = schedulesArray[0];
+                } else {
+                    System.out.println("No schedule found for trainer ID: " + trainerID);
+                }
+            } else {
+                System.out.println("Trainer not found with ID: " + trainerID);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return scheduleID;
+    }
 
     public static boolean checkTimeOverlap(LocalTime startTime1, LocalTime endTime1, LocalTime startTime2, LocalTime endTime2) {
         return startTime1.isBefore(endTime2) && endTime1.isAfter(startTime2);

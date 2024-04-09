@@ -1,6 +1,7 @@
 package org.example;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -179,7 +180,6 @@ public class Profile {
 
     }
 
-
     public static String getProfileName(int profileId) {
         Connection conn = Main.dbConnection;
         String participantName = "";
@@ -208,7 +208,7 @@ public class Profile {
         Trainer.printTrainerSchedule(1);
 
         //select a trainer to book
-        System.out.println("Enter the Trainer ID you'd like to book with");
+        System.out.println("\n Enter the Trainer ID you'd like to book with");
         int trainerID = scanner.nextInt();
         scanner.nextLine();
 
@@ -249,11 +249,18 @@ public class Profile {
             }
         }
 
-        System.out.println("This Class Time Works!");
 
         //create class
-            //link to trainer
-            //link to link to profile
+        String newFormatTime = inputTime + ":00";
+        LocalTime lt = LocalTime.parse(newFormatTime, DateTimeFormatter.ofPattern("HH:mm:ss"));
+        Time newtime = Time.valueOf(lt);
+
+        int classID = FitnessClass.createClass(Date.valueOf(LocalDate.now()),newtime,false,null, trainerID,new Integer[]{profID});
+
+        //add class to respective schedules
+        Schedule.addClassToSchedule(getProfileScheduleId(profID),classID);
+        Schedule.addClassToSchedule(Trainer.getTrainerScheduleID(trainerID),classID);
+
 
     }
 
