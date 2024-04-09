@@ -3,7 +3,7 @@ package org.example;
 import java.sql.*;
 import java.util.Scanner;
 
-public class Maintenance {
+public class Admin {
     public static void addRepairTicket(String issueDescription, Date ticketDate) {
         String sql = "INSERT INTO RepairTicket (issue_description, ticket_date) VALUES (?, ?)";
 
@@ -11,12 +11,10 @@ public class Maintenance {
             Connection connection = Main.dbConnection;
             PreparedStatement statement = connection.prepareStatement(sql);
 
-            // Set parameters
             statement.setString(1, issueDescription);
             statement.setDate(2, new java.sql.Date(ticketDate.getTime()));
             //statement.setString(3, status);
 
-            // Execute the SQL statement
             statement.executeUpdate();
 
             System.out.println("Repair ticket added successfully.");
@@ -95,4 +93,24 @@ public class Maintenance {
             e.printStackTrace();
         }
     }
+
+    public static int AdminSignIn(String username, String password)
+    {
+        String adminUsername = "admin1";
+        String adminPassword = "adminpass1";
+
+        if(!username.equals(adminUsername))
+        {
+            System.out.println(" ** Incorrect Username ** \n");
+            return -1;
+        }
+        if(!password.equals(adminPassword))
+        {
+            System.out.println(" ** Incorrect Password ** \n");
+            return -1;
+        }
+
+        return 1;
+    }
+
 }

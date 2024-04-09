@@ -4,7 +4,6 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-import java.util.jar.Manifest;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -134,7 +133,7 @@ public class Main {
                 break;
 
             case 3:
-                ID = AdminSignIn(username,password);
+                ID = Admin.AdminSignIn(username,password);
                 break;
         }
 
@@ -326,7 +325,7 @@ public class Main {
                     System.out.println("Updating a class...");
                     break;
                 case 4:
-                    EquipMaintenance();
+                    EquipMaintenanceUI();
                     break;
                 case 0:
                     System.out.println("Exiting Management dashboard...");
@@ -338,28 +337,9 @@ public class Main {
         }
     }
 
-    public static int AdminSignIn(String username, String password)
-    {
-        String adminUsername = "admin1";
-        String adminPassword = "adminpass1";
-
-        if(!username.equals(adminUsername))
-        {
-            System.out.println(" ** Incorrect Username ** \n");
-            return -1;
-        }
-        if(!password.equals(adminPassword))
-        {
-            System.out.println(" ** Incorrect Password ** \n");
-            return -1;
-        }
-
-        return 1;
-    }
 
 
-
-    public static void EquipMaintenance() {
+    public static void EquipMaintenanceUI() {
         System.out.println("\nEquipment Maintenance:");
 
         int choice = -1;
@@ -377,17 +357,17 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    Maintenance.viewAllRepairTickets();
+                    Admin.viewAllRepairTickets();
                     // TODO: View all repair tickets
                     System.out.println("Viewing all repair tickets...");
                     break;
                 case 2:
-                    Maintenance.addRepairTicketUI();
+                    Admin.addRepairTicketUI();
                     // TODO: Add repair ticket
                     System.out.println("Adding repair ticket...");
                     break;
                 case 3:
-                    Maintenance.removeRepairTicketUI();
+                    Admin.removeRepairTicketUI();
                     // TODO: Remove repair ticket
                     System.out.println("Removing repair ticket...");
                     break;
