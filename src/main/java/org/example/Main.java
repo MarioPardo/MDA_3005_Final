@@ -133,8 +133,8 @@ public class Main {
                  ID = Trainer.TrainerSignIn(username,password);
                 break;
 
-            case 3: //management sql  sign in in function
-                //TODO make customer sign in func
+            case 3:
+                //TODO make management sign in func
                 ID = 1; //temp for now
 
                 break;
@@ -200,6 +200,7 @@ public class Main {
             System.out.println("4. Book personal training class");
             System.out.println("5. Remove class from schedule");
             System.out.println("6. Change health");
+            System.out.println("7. View Routines");
             System.out.println("0. Exit");
 
             System.out.print("Enter your choice: ");
@@ -227,15 +228,14 @@ public class Main {
                     System.out.print("Enter your class id ");
                     int classId = scanner.nextInt();
                     scanner.nextLine();
-
                     Schedule.removeClassFromSchedule(schId,classId);
-
                     break;
                 case 6:
                     Health.updatehealthUI(profileID);
-                    
-                    System.out.println("Changing health...");
                     break;
+                case 7:
+                    System.out.println("Printing all Routines");
+                    Profile.showProfileRoutines(profileID);
                 case 0:
                     System.out.println("Exiting Profile...");
                     break;
