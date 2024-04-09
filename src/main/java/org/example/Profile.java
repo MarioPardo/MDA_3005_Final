@@ -267,5 +267,39 @@ public class Profile {
 
     }
 
+    public static void showProfileRoutines(int profileId) {
+        Connection conn = Main.dbConnection;
+        try {
+            String sql = "SELECT r.id AS routine_id, r.name AS routine_name, r.exercises AS exercises " +
+                    "FROM Routine r " +
+                    "JOIN Profile p ON r.id = ANY(p.routines) " +
+                    "WHERE p.id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, profileId);
+                ResultSet rs = pstmt.executeQuery();
+                System.out.println("Routines and Exercises of Profile with ID " + profileId + ":");
+                boolean foundRoutines = false;
+                while (rs.next()) {
+                    foundRoutines = true;
+                    int routineId = rs.getInt("routine_id");
+                    String routineName = rs.getString("routine_name");
+                    Array exercisesArray = rs.getArray("exercises");
+                    String[] exercises = (String[]) exercisesArray.getArray();
+                    System.out.println("Routine ID: " + routineId + ", Name: " + routineName);
+                    System.out.println("    Exercises:");
+                    for (String exercise : exercises) {
+                        System.out.println("    - " + exercise);
+                    }
+                }
+                if (!foundRoutines) {
+                    System.out.println("Profile with ID " + profileId + " has no routines.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("An error occurred while fetching routines.");
+            e.printStackTrace();
+        }
+    }
+
 }
 
