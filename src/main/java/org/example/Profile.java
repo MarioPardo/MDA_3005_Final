@@ -251,6 +251,8 @@ public class Profile {
             }
         }
 
+        if(!Admin.PayForClass())
+            return;
 
         //create class
         String newFormatTime = inputTime + ":00";

@@ -113,4 +113,26 @@ public class Admin {
         return 1;
     }
 
+    public static boolean PayForClass() {
+        Scanner scanner = Main.scanner;
+
+        System.out.println("\n PROCESSING PAYMENT ... \n");
+        System.out.println("Charging to credit card on file. Please confirm (Y/N): ");
+
+        String userInput = scanner.nextLine().trim().toUpperCase(); // Get user input and convert to uppercase
+
+        // Check user input
+        if (userInput.equals("Y")) {
+            System.out.println(" * Payment Confirmed ! * ");
+            return true;
+        } else if (userInput.equals("N")) {
+            System.out.println(" * PAYMENT DENIED * ");
+            return false;
+        } else {
+            System.out.println("Invalid input. Please enter Y or N.");
+            return PayForClass(); // Recursively call the function to prompt the user again
+        }
+    }
+
+
 }
