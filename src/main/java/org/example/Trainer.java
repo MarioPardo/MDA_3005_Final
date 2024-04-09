@@ -407,4 +407,39 @@ public class Trainer
         return time.isAfter(workingHours[0]) && time.isBefore(workingHours[1]);
     }
 
+    public static List<Integer> getAllTrainerIDs() {
+        List<Integer> trainerIDs = new ArrayList<>();
+        Connection conn = Main.dbConnection;
+
+        String sql = "SELECT id FROM Trainer";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int trainerID = rs.getInt("id");
+                trainerIDs.add(trainerID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return trainerIDs;
+    }
+
+    public static void addClientToTrainer(int trainerID, int profileID) {
+        Connection conn = Main.dbConnection;
+
+        String sql = "UPDATE Trainer SET clients = array_append(clients, ?) WHERE id = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, profileID);
+            pstmt.setInt(2, trainerID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

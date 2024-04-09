@@ -25,10 +25,10 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-        String databaseName = "***";
+        String databaseName = "3005_FinalProj";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "**";
+        String password = "0937pipe";
         //</editor-fold
 
         try{

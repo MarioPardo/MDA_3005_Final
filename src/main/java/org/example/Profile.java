@@ -204,8 +204,10 @@ public class Profile {
     {
         Scanner scanner = Main.scanner;
 
-        //TODO get all trainerIDs and do this in a for loop
-        Trainer.printTrainerSchedule(1);
+        List<Integer>  trainers = Trainer.getAllTrainerIDs();
+
+        for(Integer i : trainers)
+            Trainer.printTrainerSchedule(i);
 
         //select a trainer to book
         System.out.println("\n Enter the Trainer ID you'd like to book with");
@@ -261,6 +263,7 @@ public class Profile {
         Schedule.addClassToSchedule(getProfileScheduleId(profID),classID);
         Schedule.addClassToSchedule(Trainer.getTrainerScheduleID(trainerID),classID);
 
+        Trainer.addClientToTrainer(trainerID,profID);
 
     }
 
