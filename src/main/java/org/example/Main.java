@@ -134,9 +134,7 @@ public class Main {
                 break;
 
             case 3:
-                //TODO make management sign in func
-                ID = 1; //temp for now
-
+                ID = AdminSignIn(username,password);
                 break;
         }
 
@@ -339,6 +337,27 @@ public class Main {
             }
         }
     }
+
+    public static int AdminSignIn(String username, String password)
+    {
+        String adminUsername = "admin1";
+        String adminPassword = "adminpass1";
+
+        if(!username.equals(adminUsername))
+        {
+            System.out.println(" ** Incorrect Username ** \n");
+            return -1;
+        }
+        if(!password.equals(adminPassword))
+        {
+            System.out.println(" ** Incorrect Password ** \n");
+            return -1;
+        }
+
+        return 1;
+    }
+
+
 
     public static void EquipMaintenance() {
         System.out.println("\nEquipment Maintenance:");
