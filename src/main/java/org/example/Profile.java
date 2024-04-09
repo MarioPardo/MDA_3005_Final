@@ -1,5 +1,10 @@
 package org.example;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -162,7 +167,6 @@ public class Profile {
         }
     }
 
-
     public static void addGroupClassToSchedule(int profID)
     {
         Scanner scanner = Main.scanner;
@@ -176,6 +180,89 @@ public class Profile {
 
     }
 
+    public static String getProfileName(int profileId) {
+        Connection conn = Main.dbConnection;
+        String participantName = "";
+        try {
+            String participantSql = "SELECT first_name, last_name FROM Profile WHERE id = ?";
+            PreparedStatement participantStmt = conn.prepareStatement(participantSql);
+            participantStmt.setInt(1, profileId);
+            ResultSet participantRs = participantStmt.executeQuery();
+            if (participantRs.next()) {
+                String firstName = participantRs.getString("first_name");
+                String lastName = participantRs.getString("last_name");
+                participantName = firstName + " " + lastName;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception here (printing or logging)
+            participantName = "N/A"; // Set a default value for participantName
+        }
+        return participantName;
+    }
+
+    public static void BookPTClass(int profID)
+    {
+        Scanner scanner = Main.scanner;
+
+        //TODO get all trainerIDs and do this in a for loop
+        Trainer.printTrainerSchedule(1);
+
+        //select a trainer to book
+        System.out.println("\n Enter the Trainer ID you'd like to book with");
+        int trainerID = scanner.nextInt();
+        scanner.nextLine();
+
+        if(!Trainer.checkTrainerExists(trainerID))
+        {
+            System.out.println("Invalid Trainer ID! ");
+            return;
+        }
+
+        //select an hour slot
+        LocalTime time = null;
+        System.out.println("Enter a time in the format HH:MM:");
+        String inputTime = scanner.nextLine();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        try {
+            time = LocalTime.parse(inputTime, formatter);
+            System.out.println("Time entered: " + time);
+        } catch (Exception e) {
+            System.out.println("Invalid time format. Please enter in HH:MM format.");
+            return;
+        }
+
+        //ensure the time slot works
+        LocalTime[] workingHours = Trainer.getTrainerWorkingHours(trainerID);
+        List<LocalTime[]> bookedHours = Trainer.getTrainerBookedHours(trainerID);
+
+        if(!Trainer.checkWithinWorkingHours(time, workingHours))
+        {
+            System.out.println("This time does not fit within the trainer's working hours");
+            return;
+        }
+
+        for (LocalTime[] hours : bookedHours) {
+            if (Trainer.checkTimeOverlap(time, time.plusHours(1), hours[0], hours[1])) {
+                System.out.println("This time overlaps with a booked class");
+                return;
+            }
+        }
+
+
+        //create class
+        String newFormatTime = inputTime + ":00";
+        LocalTime lt = LocalTime.parse(newFormatTime, DateTimeFormatter.ofPattern("HH:mm:ss"));
+        Time newtime = Time.valueOf(lt);
+
+        int classID = FitnessClass.createClass(Date.valueOf(LocalDate.now()),newtime,false,null, trainerID,new Integer[]{profID});
+
+        //add class to respective schedules
+        Schedule.addClassToSchedule(getProfileScheduleId(profID),classID);
+        Schedule.addClassToSchedule(Trainer.getTrainerScheduleID(trainerID),classID);
+
+
+    }
 
 }
 

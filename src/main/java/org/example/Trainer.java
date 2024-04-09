@@ -1,7 +1,10 @@
 package org.example;
 
 import java.sql.*;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Trainer
@@ -248,6 +251,160 @@ public class Trainer
             e.printStackTrace();
         }
         return trainerName;
+    }
+
+    public static void printTrainerSchedule(int trainerId) {
+        Connection conn = Main.dbConnection;
+        try {
+            String trainerSql = "SELECT first_name, last_name, working_hours FROM Trainer WHERE id = ?";
+            PreparedStatement trainerStmt = conn.prepareStatement(trainerSql);
+            trainerStmt.setInt(1, trainerId);
+            ResultSet trainerRs = trainerStmt.executeQuery();
+
+            // Print trainer's name and working hours
+            if (trainerRs.next()) {
+                String firstName = trainerRs.getString("first_name");
+                String lastName = trainerRs.getString("last_name");
+                Array workingHoursArray = trainerRs.getArray("working_hours");
+                String[] workingHours = (String[]) workingHoursArray.getArray();
+
+                System.out.println("Trainer: " + firstName + " " + lastName + "  with ID:" + trainerId);
+                System.out.print("Working Hours: " + workingHours[0] + " - " + workingHours[1] + "\n");
+            }
+
+            // Retrieve classes for the trainer
+            String classSql = "SELECT id, date, time, is_group, room_number, participants FROM Class WHERE trainer_id = ?";
+            PreparedStatement classStmt = conn.prepareStatement(classSql);
+            classStmt.setInt(1, trainerId);
+            ResultSet classRs = classStmt.executeQuery();
+
+            // Print classes
+            while (classRs.next()) {
+                int classId = classRs.getInt("id");
+                Date classDate = classRs.getDate("date");
+                Time classTime = classRs.getTime("time");
+                Time endTime = Time.valueOf(classTime.toLocalTime().plusHours(1));
+                boolean isGroup = classRs.getBoolean("is_group");
+                Array participantsArray = classRs.getArray("participants");
+
+                Integer[] participants = null;
+                if(participantsArray != null)
+                     participants = (Integer[]) participantsArray.getArray();
+
+                if (isGroup) {
+                    System.out.println("    * Teaching group class at " + classTime.toString().substring(0, 5) + " - " + endTime.toString().substring(0, 5));
+                } else {
+                    System.out.print("    * Personal training class on " + classDate.toString() + " at " + classTime.toString().substring(0, 5) + " - " + endTime.toString().substring(0, 5));
+                    // Print participants' names
+                    if(participants != null)
+                        for (int participantId : participants) {
+                            String participantName = Profile.getProfileName(participantId);
+                            System.out.print(" with client " + participantName + "\n");
+                        }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean checkTrainerExists(int trainerId) {
+        Connection conn = Main.dbConnection;
+        boolean trainerExists = false;
+        try {
+            String sql = "SELECT COUNT(*) AS count FROM Trainer WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, trainerId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("count");
+                trainerExists = count > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception here (printing or logging)
+        }
+        return trainerExists;
+    }
+
+
+
+    public static LocalTime[] getTrainerWorkingHours(int trainerId)
+    {
+        Connection connection = Main.dbConnection;
+        LocalTime[] workingHours = null;
+        try (PreparedStatement statement = connection.prepareStatement("SELECT working_hours FROM Trainer WHERE id = ?")) {
+            statement.setInt(1, trainerId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                Array workingHoursArray = resultSet.getArray("working_hours");
+                String[] workingHoursStrings = (String[]) workingHoursArray.getArray();
+                workingHours = new LocalTime[2];
+                workingHours[0] = LocalTime.parse(workingHoursStrings[0]);
+                workingHours[1] = LocalTime.parse(workingHoursStrings[1]);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return workingHours;
+    }
+
+    public static List<LocalTime[]> getTrainerBookedHours(int trainerId)
+    {
+        List<LocalTime[]> bookedHours = new ArrayList<>();
+        Connection connection = Main.dbConnection;
+        try (
+             PreparedStatement statement = connection.prepareStatement("SELECT time FROM Class WHERE trainer_id = ?")) {
+            statement.setInt(1, trainerId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                LocalTime startTime = resultSet.getTime("time").toLocalTime();
+                LocalTime endTime = startTime.plusHours(1); // End time is start time + 1 hour
+                bookedHours.add(new LocalTime[]{startTime, endTime});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookedHours;
+    }
+
+    public static int getTrainerScheduleID(int trainerID) {
+        Connection conn = Main.dbConnection;
+        int scheduleID = -1; // Default value if no schedule is found
+
+        String sql = "SELECT schedules FROM Trainer WHERE id = ?";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, trainerID);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                Integer[] schedulesArray = (Integer[]) rs.getArray("schedules").getArray();
+                if (schedulesArray.length > 0) {
+                    scheduleID = schedulesArray[0];
+                } else {
+                    System.out.println("No schedule found for trainer ID: " + trainerID);
+                }
+            } else {
+                System.out.println("Trainer not found with ID: " + trainerID);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return scheduleID;
+    }
+
+    public static boolean checkTimeOverlap(LocalTime startTime1, LocalTime endTime1, LocalTime startTime2, LocalTime endTime2) {
+        return startTime1.isBefore(endTime2) && endTime1.isAfter(startTime2);
+    }
+
+    public static boolean checkWithinWorkingHours(LocalTime time, LocalTime[] workingHours) {
+        return time.isAfter(workingHours[0]) && time.isBefore(workingHours[1]);
     }
 
 }

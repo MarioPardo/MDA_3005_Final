@@ -28,8 +28,7 @@ public class Main {
         String databaseName = "***";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "***";
-
+        String password = "**";
         //</editor-fold
 
         try{
@@ -218,12 +217,11 @@ public class Main {
                     Profile.addGroupClassToSchedule(profileID);
                     break;
                 case 4:
-                    // TODO: Book personal training class
                     System.out.println("Booking personal training class...");
+                    Profile.BookPTClass(profileID);
                     break;
                 case 5:
-                    // TODO: Remove class from schedule
-                    System.out.println("Removing class from schedule...give us the class you'd like to remove!");
+                    System.out.println("Removing class from schedule. Please enter the class ID of the class you'd like to remove!");
 
                     int schId = Profile.getProfileScheduleId( profileID);
                     System.out.print("Enter your class id ");
@@ -258,8 +256,9 @@ public class Main {
             System.out.println("2. Show all clients");
             System.out.println("3. Find gym profile by name");
             System.out.println("4. Create new Routine");
-            System.out.println("5, Show all My Routines");
-            System.out.println("6, Add Routine to Client");
+            System.out.println("5. Show all My Routines");
+            System.out.println("6. Add Routine to Client");
+            System.out.println("7. View my Schedule");
             System.out.println("0. Exit");
 
             System.out.print("Enter your choice: ");
@@ -284,6 +283,9 @@ public class Main {
                     break;
                 case 6:
                     Trainer.addRoutineToProfile();
+                    break;
+                case 7:
+                    Trainer.printTrainerSchedule(trainerID);
                     break;
                 case 0:
                     System.out.println("Exiting Trainer Dashboard \n \n");
