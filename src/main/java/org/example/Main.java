@@ -69,6 +69,7 @@ public class Main {
                     CustomerUI(custID);
 
 
+
                     break;
                 case 2:
                     System.out.println("Trainer sign in selected");
@@ -305,6 +306,8 @@ public class Main {
             System.out.println("2. Make a group class and add to schedule");
             System.out.println("3. Update a class");
             System.out.println("4. Equipment management");
+            System.out.println("5. View booked rooms");
+            System.out.println("6. Cancel class ");
             System.out.println("0. Exit");
 
             System.out.print("Enter your choice: ");
@@ -326,6 +329,12 @@ public class Main {
                     break;
                 case 4:
                     EquipMaintenanceUI();
+                    break;
+                case 5:
+                    Schedule.viewAllBookedRooms();
+                    break;
+                case 6:
+                    Schedule.cancelClassUI();
                     break;
                 case 0:
                     System.out.println("Exiting Management dashboard...");
