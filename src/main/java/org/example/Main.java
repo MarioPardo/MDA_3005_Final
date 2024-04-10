@@ -24,10 +24,10 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-        String databaseName = "**";
+        String databaseName = "";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "***";
+        String password = "xsixteen123";
 
         //</editor-fold
 
@@ -67,6 +67,7 @@ public class Main {
                         break;
 
                     CustomerUI(custID);
+
 
 
                     break;
@@ -283,6 +284,8 @@ public class Main {
             System.out.println("2. Make a group class and add to schedule");
             System.out.println("3. Update a class");
             System.out.println("4. Equipment management");
+            System.out.println("5. View booked rooms");
+            System.out.println("6. Cancel class ");
             System.out.println("0. Exit");
 
             System.out.print("Enter your choice: ");
@@ -304,6 +307,12 @@ public class Main {
                     break;
                 case 4:
                     EquipMaintenance();
+                    break;
+                case 5:
+                    Schedule.viewAllBookedRooms();
+                    break;
+                case 6:
+                    Schedule.cancelClassUI();
                     break;
                 case 0:
                     System.out.println("Exiting Management dashboard...");
