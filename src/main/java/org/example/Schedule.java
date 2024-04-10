@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Schedule
-{
+public class Schedule {
 
     public static int createSchedule(String date) {
         Connection conn = Main.dbConnection;
@@ -27,46 +26,62 @@ public class Schedule
     }
 
     public static void viewSchedule(int accountId) {
+
+        Connection connection = Main.dbConnection;
+
         String classSql = "SELECT c.* " +
                 "FROM Profile p " +
                 "JOIN Schedule s ON p.schedules @> ARRAY[s.id] " +
                 "JOIN Class c ON s.classes @> ARRAY[c.id] " +
                 "WHERE p.id = ?";
 
-        try (Connection connection = Main.dbConnection;
-             PreparedStatement classStmt = connection.prepareStatement(classSql)) {
+        try (PreparedStatement classStmt = connection.prepareStatement(classSql)) {
             classStmt.setInt(1, accountId);
             ResultSet rs = classStmt.executeQuery();
 
+            boolean classesFound = false;
+
+            int classNum = 1;
             while (rs.next()) {
+                classesFound = true;
+
                 int classId = rs.getInt("id");
                 Date date = rs.getDate("date");
                 Time time = rs.getTime("time");
+                Time endTime = Time.valueOf(time.toLocalTime().plusHours(1));
+                String formattedTime = time.toString().substring(0, 5);
+                String formattedEndTime = endTime.toString().substring(0, 5);
                 boolean isGroup = rs.getBoolean("is_group");
                 Integer roomNumber = rs.getObject("room_number", Integer.class); // Handle NULL room numbers
                 int trainerId = rs.getInt("trainer_id");
-                // Retrieve other class details as needed
 
-                // Print class details
-                System.out.println("Class Information:");
-                System.out.println("Class ID: " + classId);
-                System.out.println("Date: " + date);
-                System.out.println("Time: " + time);
-                System.out.println("Is Group: " + isGroup);
-                if (roomNumber != null) {
-                    System.out.println("Room Number: " + roomNumber);
-                } else {
-                    System.out.println("Room Number: N/A");
+                if(isGroup)
+                {
+                    System.out.println("\n Class " + classNum++ +" :");
+                    System.out.println("   Group Class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + " - " + endTime + "  ID: " + classId );
+                }else
+                {
+                    System.out.println("\n Class " + classNum++ +" :");
+                    System.out.println("   Personal Training class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + " - " + endTime +"  ID: " + classId  );
                 }
-                System.out.println("Trainer ID: " + trainerId);
-                System.out.println("\n");
+
+                if (roomNumber != null)
+                    System.out.println("     Room Number: " + roomNumber);
+
+
+                System.out.println(" ");
             }
+
+            if (!classesFound) {
+                System.out.println("NO CLASSES IN SCHEDULE");
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private static boolean isScheduleIdValid( int scheduleId) {
+    public static boolean isScheduleIdValid(int scheduleId) {
         Connection conn = Main.dbConnection;
         String sql = "SELECT COUNT(*) FROM Schedule WHERE id = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -83,10 +98,10 @@ public class Schedule
     }
 
     // check if classId exists in the Class table
-    private static boolean isClassIdValid( int classId) {
+    public static boolean isClassIdValid(int classId) {
 
         Connection conn = Main.dbConnection;
-      
+
         String sql = "SELECT COUNT(*) FROM Class WHERE id = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, classId);
@@ -100,7 +115,6 @@ public class Schedule
         }
         return false;
     }
-
 
 
     public static void addClassToSchedule(int scheduleId, int classId) {
@@ -118,11 +132,13 @@ public class Schedule
 
                 e.printStackTrace();
                 System.out.println("ERROR adding to Schedule");
-
             }
-
         } else {
+            if(!isClassIdValid(classId))
+                System.out.println("INVALID CLASS");
 
+            if(!isScheduleIdValid(scheduleId))
+                System.out.println("INVALID SCHED");
             System.out.println("ID error");
         }
 
@@ -199,5 +215,83 @@ public class Schedule
         cancelClass(id);
     }
 
+    public static void ViewAllGroupClasses(String date)
+    {
+        System.out.println("Showing group classes for " + date);
+        Connection conn = Main.dbConnection;
+
+        String classSql = "SELECT id, time, room_number, trainer_id FROM Class WHERE date = ? AND is_group = TRUE";
+        try {
+            PreparedStatement classStmt = conn.prepareStatement(classSql);
+            classStmt.setDate(1, java.sql.Date.valueOf(date));
+
+            ResultSet classRs = classStmt.executeQuery();
+
+            if (!classRs.isBeforeFirst()) {
+                System.out.println("NO GROUP CLASSES FOR THE DAY");
+            } else {
+                System.out.println("Group Classes for " + date + ":");
+                while (classRs.next()) {
+                    Time classTime = classRs.getTime("time");
+                    String formattedTime = classTime.toString().substring(0, 5);
+                    int roomNumber = classRs.getInt("room_number");
+                    int classID = classRs.getInt("id");
+
+                    String roomStr = (roomNumber != 0) ? String.valueOf(roomNumber) : "NONE";
+                    String trainerName = FitnessClass.getTrainerForClass(classRs.getInt("id"));
+
+                    System.out.println("Time: " + formattedTime + ", Room #: " + roomStr + ", Trainer: " + trainerName + ", Class ID: " + classID);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean isClassInSchedule(int scheduleId, int classId) {
+
+        Connection connection = Main.dbConnection;
+
+        String sql = "SELECT id FROM Schedule WHERE id = ? AND ? = ANY(classes)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, scheduleId);
+            preparedStatement.setInt(2, classId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next(); // Returns true if the class ID exists in the schedule
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false in case of an exception
+        }
+    }
+
+    public static void removeClassFromSchedule(int scheduleId, int classIdToRemove) {
+        Connection connection = Main.dbConnection;
+
+        String sql = "UPDATE Schedule SET classes = array_remove(classes, ?) WHERE id = ?";
+        boolean check;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, classIdToRemove);
+            preparedStatement.setInt(2, scheduleId);
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                System.out.println("Schedule ID not found. No rows updated.");
+            }
+            else if(! (check = isClassInSchedule(scheduleId,classIdToRemove)))
+            {
+                System.out.println("Class ID not found. No rows updated.");
+
+            }
+            else {
+                System.out.println("Class removed from schedule successfully.");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
 

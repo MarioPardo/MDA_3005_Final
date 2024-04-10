@@ -1,8 +1,9 @@
 package org.example;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-import java.util.jar.Manifest;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -18,12 +19,12 @@ public class Main {
 
         launch();
 
-
     }
 
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
+
         String databaseName = "finalproject";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
@@ -49,7 +50,8 @@ public class Main {
         scanner = new Scanner(System.in);
         System.out.println(" *** Welcome to the MDA Fitness Club  *** ");
 
-        while (true) {
+        while (true)
+        {
             System.out.println("Select an option:");
             System.out.println("1. Customer Sign In");
             System.out.println("2. Trainer Sign In");
@@ -61,13 +63,13 @@ public class Main {
 
             switch (choice) {
                 case 1:
-//                    System.out.println("Customer sign in selected");
-//                    int custID = SignIn(1);
-//                    if(custID == -1)
-//                        break;
-//
-//                    CustomerUI(custID);
-                    Schedule.cancelClassUI();
+                    System.out.println("Customer sign in selected");
+                    int custID = SignIn(1);
+                    if(custID == -1)
+                        break;
+
+                    CustomerUI(custID);
+                    
 
 
 
@@ -93,11 +95,19 @@ public class Main {
                     break;
                 case 0:
                     System.out.println("Exiting application");
+
+                    try {dbConnection.close();
+                    } catch(Exception e) {
+                        System.out.println("Error closing connection");
+                    }
+
+
                     return;
                 default:
                     System.out.println("Invalid choice, please try again.");
             }
         }
+
 
 
     }
@@ -126,10 +136,8 @@ public class Main {
                  ID = Trainer.TrainerSignIn(username,password);
                 break;
 
-            case 3: //management sql  sign in in function
-                //TODO make customer sign in func
-                ID = 1; //temp for now
-
+            case 3:
+                ID = Admin.AdminSignIn(username,password);
                 break;
         }
 
@@ -162,7 +170,12 @@ public class Main {
                     Customer.addProfileToCustomer(profileID,custID);
                     break;
                 case 3:
-                    // TODO: Select profile to go to
+                    int profID = Customer.validateProfileOwnership(custID);
+                    if(profID == -1)
+                        break;
+
+                    ProfileUI(profID);
+
                     break;
                 case 0:
                     System.out.println("Exiting Customer profile...");
@@ -187,7 +200,9 @@ public class Main {
             System.out.println("3. Add group class to schedule");
             System.out.println("4. Book personal training class");
             System.out.println("5. Remove class from schedule");
-            System.out.println("6. Change health");
+            System.out.println("6. Reschedule class");
+            System.out.println("7. Change health");
+            System.out.println("8. View Routines");
             System.out.println("0. Exit");
 
             System.out.print("Enter your choice: ");
@@ -196,26 +211,42 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    // TODO: View schedule
+                    Schedule.viewSchedule(profileID);
                     break;
                 case 2:
-                    // TODO: View all available group classes
+                    Schedule.ViewAllGroupClasses(getCurrentDate()); //since only doing for current day
                     break;
                 case 3:
-                    // TODO: Add group class to schedule
+                    Profile.addGroupClassToSchedule(profileID);
                     break;
                 case 4:
-                    // TODO: Book personal training class
                     System.out.println("Booking personal training class...");
+                    Profile.BookPTClass(profileID);
                     break;
                 case 5:
-                    // TODO: Remove class from schedule
-                    System.out.println("Removing class from schedule...");
+                    System.out.println("Removing class from schedule. Please enter the class ID of the class you'd like to remove!");
+
+                    int schId = Profile.getProfileScheduleId( profileID);
+                    System.out.print("Enter your class id ");
+                    int classId = scanner.nextInt();
+                    scanner.nextLine();
+                    Schedule.removeClassFromSchedule(schId,classId);
                     break;
                 case 6:
+                    int schId1 = Profile.getProfileScheduleId( profileID);
+                    System.out.print("Enter your class id ");
+                    int classId1 = scanner.nextInt();
+                    scanner.nextLine();
+                    Schedule.removeClassFromSchedule(schId1,classId1);
+
+                    Profile.BookPTClass(profileID);
+                    break;
+                case 7:
                     Health.updatehealthUI(profileID);
-                    
-                    System.out.println("Changing health...");
+                    break;
+                case 8:
+                    System.out.println("Printing all Routines");
+                    Profile.showProfileRoutines(profileID);
                     break;
                 case 0:
                     System.out.println("Exiting Profile...");
@@ -237,8 +268,9 @@ public class Main {
             System.out.println("2. Show all clients");
             System.out.println("3. Find gym profile by name");
             System.out.println("4. Create new Routine");
-            System.out.println("5, Show all My Routines");
-            System.out.println("6, Add Routine to Client");
+            System.out.println("5. Show all My Routines");
+            System.out.println("6. Add Routine to Client");
+            System.out.println("7. View my Schedule");
             System.out.println("0. Exit");
 
             System.out.print("Enter your choice: ");
@@ -253,7 +285,7 @@ public class Main {
 
                     break;
                 case 3:
-                   // TODO: findGymProfileByName();
+                    Trainer.findGymProfileByNameUI();
                     break;
                 case 4:
                     Trainer.createTrainerRoutine(trainerID);
@@ -263,6 +295,9 @@ public class Main {
                     break;
                 case 6:
                     Trainer.addRoutineToProfile();
+                    break;
+                case 7:
+                    Trainer.printTrainerSchedule(trainerID);
                     break;
                 case 0:
                     System.out.println("Exiting Trainer Dashboard \n \n");
@@ -307,7 +342,7 @@ public class Main {
                     System.out.println("Updating a class...");
                     break;
                 case 4:
-                    EquipMaintenance();
+                    EquipMaintenanceUI();
                     break;
                 case 5:
                     Schedule.viewAllBookedRooms();
@@ -325,7 +360,9 @@ public class Main {
         }
     }
 
-    public static void EquipMaintenance() {
+
+
+    public static void EquipMaintenanceUI() {
         System.out.println("\nEquipment Maintenance:");
 
         int choice = -1;
@@ -343,17 +380,17 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    Maintenance.viewAllRepairTickets();
+                    Admin.viewAllRepairTickets();
                     // TODO: View all repair tickets
                     System.out.println("Viewing all repair tickets...");
                     break;
                 case 2:
-                    Maintenance.addRepairTicketUI();
+                    Admin.addRepairTicketUI();
                     // TODO: Add repair ticket
                     System.out.println("Adding repair ticket...");
                     break;
                 case 3:
-                    Maintenance.removeRepairTicketUI();
+                    Admin.removeRepairTicketUI();
                     // TODO: Remove repair ticket
                     System.out.println("Removing repair ticket...");
                     break;
@@ -366,4 +403,13 @@ public class Main {
             }
         }
     }
+
+
+    public static String getCurrentDate()
+    {
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return today.format(formatter);
+    }
+
 }
