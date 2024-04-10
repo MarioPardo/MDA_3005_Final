@@ -24,10 +24,10 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-        String databaseName = "**";
+        String databaseName = "finalproject";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "***";
+        String password = "xsixteen123";
 
         //</editor-fold
 
@@ -61,12 +61,13 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    System.out.println("Customer sign in selected");
-                    int custID = SignIn(1);
-                    if(custID == -1)
-                        break;
-
-                    CustomerUI(custID);
+//                    System.out.println("Customer sign in selected");
+//                    int custID = SignIn(1);
+//                    if(custID == -1)
+//                        break;
+//
+//                    CustomerUI(custID);
+                    Schedule.cancelClassUI();
 
 
 
