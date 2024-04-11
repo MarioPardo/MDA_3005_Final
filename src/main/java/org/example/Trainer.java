@@ -281,7 +281,6 @@ public class Trainer
             // Print classes
             while (classRs.next()) {
                 int classId = classRs.getInt("id");
-                Date classDate = classRs.getDate("date");
                 Time classTime = classRs.getTime("time");
                 Time endTime = Time.valueOf(classTime.toLocalTime().plusHours(1));
                 boolean isGroup = classRs.getBoolean("is_group");
@@ -294,7 +293,7 @@ public class Trainer
                 if (isGroup) {
                     System.out.println("    * Teaching group class at " + classTime.toString().substring(0, 5) + " - " + endTime.toString().substring(0, 5));
                 } else {
-                    System.out.print("    * Personal training class on " + classDate.toString() + " at " + classTime.toString().substring(0, 5) + " - " + endTime.toString().substring(0, 5));
+                    System.out.print("    * Personal training class at " + classTime.toString().substring(0, 5) + " - " + endTime.toString().substring(0, 5));
                     // Print participants' names
                     if(participants != null)
                         for (int participantId : participants) {

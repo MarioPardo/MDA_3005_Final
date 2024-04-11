@@ -399,11 +399,4 @@ public class Main {
     }
 
 
-    public static String getCurrentDate()
-    {
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return today.format(formatter);
-    }
-
 }
