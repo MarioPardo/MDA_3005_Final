@@ -97,9 +97,6 @@ public class FitnessClass
         String timeStr = scanner.next();
         Time time = Time.valueOf(timeStr);
 
-        System.out.println("Is it a group class? (true/false): ");
-        boolean isGroup = scanner.nextBoolean();
-
         System.out.println("Enter Room Number (if applicable, otherwise enter null): ");
         Integer roomNumber = null;
         String roomNumberStr = scanner.next();
@@ -109,36 +106,24 @@ public class FitnessClass
         System.out.println("Enter Trainer ID: ");
         int trainerId = scanner.nextInt();
 
-        System.out.println("Enter Participant IDs (comma-separated, leave empty if none): ");
-        scanner.nextLine();
-        Integer[] participants;
-        String participantsStr = scanner.nextLine();
-        if (participantsStr.isEmpty()) {
-            participants = new Integer[0];
-        } else {
-            String[] participantsArr = participantsStr.split(",");
-            participants = new Integer[participantsArr.length];
-            for (int i = 0; i < participantsArr.length; i++) {
-                participants[i] = Integer.parseInt(participantsArr[i]);
-            }
+        if(!Trainer.checkTrainerExists(trainerId))
+        {
+            System.out.println("Trainer does not exist!");
+            return;
         }
-        updateClass(classId, time, isGroup, roomNumber, trainerId, participants);
+
+        Integer[] participants;
+        participants = new Integer[0];
+
+        updateClass(classId, time, true, roomNumber, trainerId, participants);
     }
     public static void createclassUI(){
         Scanner scanner = new Scanner(System.in);
-
-        // Prompt user for class details
-        System.out.println("Enter date (YYYY-MM-DD):");
-        String dateStr = scanner.nextLine();
-        Date date = Date.valueOf(dateStr);
 
         System.out.println("Enter time (HH:MM:SS):");
         String timeStr = scanner.nextLine();
         Time time = Time.valueOf(timeStr);
 
-        System.out.println("Is it a group class? (true/false):");
-        boolean isGroup = scanner.nextBoolean();
-        scanner.nextLine(); // Consume newline
 
         System.out.println("Enter room number (optional, enter 'null' if not applicable):");
         Integer roomNumber = null;
@@ -147,26 +132,21 @@ public class FitnessClass
             roomNumber = Integer.parseInt(roomNumberStr);
         }
 
-        System.out.println("Enter Participant IDs (comma-separated, leave empty if none): ");
-        scanner.nextLine();
         Integer[] participants;
-        String participantsStr = scanner.nextLine();
-        if (participantsStr.isEmpty()) {
-            participants = new Integer[0];
-        } else {
-            String[] participantsArr = participantsStr.split(",");
-            participants = new Integer[participantsArr.length];
-            for (int i = 0; i < participantsArr.length; i++) {
-                participants[i] = Integer.parseInt(participantsArr[i]);
-            }
-        }
+        participants = new Integer[0];
 
         System.out.println("Enter Trainer ID:");
         int trainerId = scanner.nextInt();
         scanner.nextLine(); // Consume newline
 
+        if(!Trainer.checkTrainerExists(trainerId))
+        {
+            System.out.println("Trainer does not exist!");
+            return;
+        }
+
         // Call createClass function with user inputted data
-        FitnessClass.createClass(time, isGroup, roomNumber, trainerId, participants);
+        FitnessClass.createClass(time, true, roomNumber, trainerId, participants);
     }
 
     public static String getTrainerForClass(int classID)
