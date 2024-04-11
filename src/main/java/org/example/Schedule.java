@@ -159,10 +159,10 @@ public class Schedule {
                 int roomNumber = rs.getInt("room_number");
                 int trainerId = rs.getInt("trainer_id");
 
-                System.out.println("Class ID: " + classId);
-                System.out.println("Time: " + classTime);
-                System.out.println("Room Number: " + roomNumber);
-                System.out.println("Trainer ID: " + trainerId);
+                System.out.println("    Room Number: " + roomNumber);
+                System.out.println("        Class ID: " + classId);
+                System.out.println("        Time: " + classTime);
+                System.out.println("        Trainer ID: " + trainerId);
                 System.out.println();
             }
             if (!foundBookings) {
