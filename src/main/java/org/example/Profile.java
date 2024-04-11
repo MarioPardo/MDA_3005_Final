@@ -1,7 +1,5 @@
 package org.example;
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -49,8 +47,7 @@ public class Profile {
             return -1; // Return -1 if health details cannot be created
         }
 
-        String currentDate = getCurrentDate();
-        int scheduleId = Schedule.createSchedule(currentDate);
+        int scheduleId = Schedule.createSchedule();
         try {
             Connection connection = Main.dbConnection;
             PreparedStatement profileStmt = connection.prepareStatement(profileSql, Statement.RETURN_GENERATED_KEYS);
@@ -259,7 +256,7 @@ public class Profile {
         LocalTime lt = LocalTime.parse(newFormatTime, DateTimeFormatter.ofPattern("HH:mm:ss"));
         Time newtime = Time.valueOf(lt);
 
-        int classID = FitnessClass.createClass(Date.valueOf(LocalDate.now()),newtime,false,null, trainerID,new Integer[]{profID});
+        int classID = FitnessClass.createClass(newtime,false,null, trainerID,new Integer[]{profID});
 
         //add class to respective schedules
         Schedule.addClassToSchedule(getProfileScheduleId(profID),classID);

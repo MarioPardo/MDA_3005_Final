@@ -273,7 +273,7 @@ public class Trainer
             }
 
             // Retrieve classes for the trainer
-            String classSql = "SELECT id, date, time, is_group, room_number, participants FROM Class WHERE trainer_id = ?";
+            String classSql = "SELECT id, time, is_group, room_number, participants FROM Class WHERE trainer_id = ?";
             PreparedStatement classStmt = conn.prepareStatement(classSql);
             classStmt.setInt(1, trainerId);
             ResultSet classRs = classStmt.executeQuery();
@@ -281,7 +281,6 @@ public class Trainer
             // Print classes
             while (classRs.next()) {
                 int classId = classRs.getInt("id");
-                Date classDate = classRs.getDate("date");
                 Time classTime = classRs.getTime("time");
                 Time endTime = Time.valueOf(classTime.toLocalTime().plusHours(1));
                 boolean isGroup = classRs.getBoolean("is_group");
@@ -289,12 +288,12 @@ public class Trainer
 
                 Integer[] participants = null;
                 if(participantsArray != null)
-                     participants = (Integer[]) participantsArray.getArray();
+                    participants = (Integer[]) participantsArray.getArray();
 
                 if (isGroup) {
                     System.out.println("    * Teaching group class at " + classTime.toString().substring(0, 5) + " - " + endTime.toString().substring(0, 5));
                 } else {
-                    System.out.print("    * Personal training class on " + classDate.toString() + " at " + classTime.toString().substring(0, 5) + " - " + endTime.toString().substring(0, 5));
+                    System.out.print("    * Personal training class " + classTime.toString().substring(0, 5) + " - " + endTime.toString().substring(0, 5));
                     // Print participants' names
                     if(participants != null)
                         for (int participantId : participants) {

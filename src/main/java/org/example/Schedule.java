@@ -7,12 +7,11 @@ import java.util.Scanner;
 
 public class Schedule {
 
-    public static int createSchedule(String date) {
+    public static int createSchedule() {
         Connection conn = Main.dbConnection;
-        String sql = "INSERT INTO schedule (schedule_date) VALUES (?) RETURNING id";
+        String sql = "INSERT INTO schedule DEFAULT VALUES RETURNING id"; // Insert without specifying schedule_date
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDate(1, Date.valueOf(date));
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -46,7 +45,6 @@ public class Schedule {
                 classesFound = true;
 
                 int classId = rs.getInt("id");
-                Date date = rs.getDate("date");
                 Time time = rs.getTime("time");
                 Time endTime = Time.valueOf(time.toLocalTime().plusHours(1));
                 String formattedTime = time.toString().substring(0, 5);
@@ -58,11 +56,11 @@ public class Schedule {
                 if(isGroup)
                 {
                     System.out.println("\n Class " + classNum++ +" :");
-                    System.out.println("   Group Class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + " - " + endTime + "  ID: " + classId );
+                    System.out.println("   Group Class with Trainer: " + Trainer.getTrainerName(trainerId) +  "   at: " + formattedTime + " - " + endTime + "  ID: " + classId );
                 }else
                 {
                     System.out.println("\n Class " + classNum++ +" :");
-                    System.out.println("   Personal Training class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + " - " + endTime +"  ID: " + classId  );
+                    System.out.println("   Personal Training class with Trainer: " + Trainer.getTrainerName(trainerId) +  "   at: " + formattedTime + " - " + endTime +"  ID: " + classId  );
                 }
 
                 if (roomNumber != null)
@@ -118,6 +116,9 @@ public class Schedule {
 
 
     public static void addClassToSchedule(int scheduleId, int classId) {
+
+        System.out.println("Adding class " + classId + "to sched " + scheduleId);
+
         Connection conn = Main.dbConnection;
         String sql = "UPDATE Schedule SET classes = array_append(classes, ?) WHERE id = ?";
 
@@ -154,16 +155,14 @@ public class Schedule {
             while (rs.next()) {
                 foundBookings = true;
                 int classId = rs.getInt("id");
-                java.sql.Date classDate = rs.getDate("date");
                 java.sql.Time classTime = rs.getTime("time");
                 int roomNumber = rs.getInt("room_number");
                 int trainerId = rs.getInt("trainer_id");
 
-                System.out.println("Class ID: " + classId);
-                System.out.println("Date: " + classDate);
-                System.out.println("Time: " + classTime);
-                System.out.println("Room Number: " + roomNumber);
-                System.out.println("Trainer ID: " + trainerId);
+                System.out.println("    Room Number: " + roomNumber);
+                System.out.println("        Class ID: " + classId);
+                System.out.println("        Time: " + classTime);
+                System.out.println("        Trainer ID: " + trainerId);
                 System.out.println();
             }
             if (!foundBookings) {
@@ -215,22 +214,19 @@ public class Schedule {
         cancelClass(id);
     }
 
-    public static void ViewAllGroupClasses(String date)
+    public static void ViewAllGroupClasses()
     {
-        System.out.println("Showing group classes for " + date);
+        System.out.println("Showing All group classes \n ");
         Connection conn = Main.dbConnection;
 
-        String classSql = "SELECT id, time, room_number, trainer_id FROM Class WHERE date = ? AND is_group = TRUE";
+        String classSql = "SELECT id, time, room_number, trainer_id FROM Class WHERE is_group = TRUE";
         try {
             PreparedStatement classStmt = conn.prepareStatement(classSql);
-            classStmt.setDate(1, java.sql.Date.valueOf(date));
-
             ResultSet classRs = classStmt.executeQuery();
 
             if (!classRs.isBeforeFirst()) {
                 System.out.println("NO GROUP CLASSES FOR THE DAY");
             } else {
-                System.out.println("Group Classes for " + date + ":");
                 while (classRs.next()) {
                     Time classTime = classRs.getTime("time");
                     String formattedTime = classTime.toString().substring(0, 5);
@@ -266,7 +262,14 @@ public class Schedule {
         }
     }
 
-    public static void removeClassFromSchedule(int scheduleId, int classIdToRemove) {
+    public static int removeClassFromSchedule(int scheduleId, int classIdToRemove) {
+
+        if(!isClassInSchedule(scheduleId,classIdToRemove))
+        {
+            System.out.println("** Class not in schedule **");
+            return -1;
+        }
+
         Connection connection = Main.dbConnection;
 
         String sql = "UPDATE Schedule SET classes = array_remove(classes, ?) WHERE id = ?";
@@ -280,16 +283,35 @@ public class Schedule {
             if (rowsUpdated == 0) {
                 System.out.println("Schedule ID not found. No rows updated.");
             }
-            else if(! (check = isClassInSchedule(scheduleId,classIdToRemove)))
-            {
-                System.out.println("Class ID not found. No rows updated.");
-
-            }
             else {
                 System.out.println("Class removed from schedule successfully.");
             }
         }
         catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 1;
+    }
+
+    public static void deleteClassFromDB(int classID) {
+        Connection conn = Main.dbConnection;
+        try {
+            // Delete the class entry from the Class table
+            String deleteClassSql = "DELETE FROM Class WHERE id = ?";
+            PreparedStatement deleteClassStmt = conn.prepareStatement(deleteClassSql);
+            deleteClassStmt.setInt(1, classID);
+            deleteClassStmt.executeUpdate();
+
+            // Remove the class ID from any schedules that include it
+            String updateScheduleSql = "UPDATE Schedule SET classes = array_remove(classes, ?)";
+            PreparedStatement updateScheduleStmt = conn.prepareStatement(updateScheduleSql);
+            updateScheduleStmt.setInt(1, classID);
+            updateScheduleStmt.executeUpdate();
+
+            System.out.println("Class with ID " + classID + " has been deleted from the database.");
+        } catch (SQLException e) {
+            System.out.println("Error deleting class from the database.");
             e.printStackTrace();
         }
     }

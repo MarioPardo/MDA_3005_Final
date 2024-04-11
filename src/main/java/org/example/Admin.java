@@ -71,7 +71,7 @@ public class Admin {
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             ResultSet rs = pstmt.executeQuery();
             boolean foundTickets = false;
-            System.out.println("All Repair Tickets:");
+            System.out.println("All Repair Tickets:\n");
             while (rs.next()) {
                 foundTickets = true;
                 int ticketId = rs.getInt("ticket_id");
@@ -80,9 +80,8 @@ public class Admin {
                 //String status = rs.getString("status");
 
                 System.out.println("Ticket ID: " + ticketId);
-                System.out.println("Issue Description: " + issueDescription);
-                System.out.println("Ticket Date: " + ticketDate);
-                //System.out.println("Status: " + status);
+                System.out.println("    Issue Description: " + issueDescription);
+                System.out.println("    Ticket Date: " + ticketDate + "\n");
                 System.out.println();
             }
             if (!foundTickets) {

@@ -24,12 +24,10 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-
-        String databaseName = "finalproject";
+        String databaseName = "3005_FinalProj";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "xsixteen123";
-
+        String password = "0937pipe";
         //</editor-fold
 
         try{
@@ -211,7 +209,7 @@ public class Main {
                     Schedule.viewSchedule(profileID);
                     break;
                 case 2:
-                    Schedule.ViewAllGroupClasses(getCurrentDate()); //since only doing for current day
+                    Schedule.ViewAllGroupClasses(); //since only doing for current day
                     break;
                 case 3:
                     Profile.addGroupClassToSchedule(profileID);
@@ -221,20 +219,35 @@ public class Main {
                     Profile.BookPTClass(profileID);
                     break;
                 case 5:
-                    System.out.println("Removing class from schedule. Please enter the class ID of the class you'd like to remove!");
+                    System.out.println("Removing class from schedule");
 
-                    int schId = Profile.getProfileScheduleId( profileID);
                     System.out.print("Enter your class id ");
                     int classId = scanner.nextInt();
                     scanner.nextLine();
-                    Schedule.removeClassFromSchedule(schId,classId);
+
+                    int trainerSchedID = Trainer.getTrainerScheduleID(FitnessClass.getTrainerIDForClass(classId));
+                    int profSchedID = Profile.getProfileScheduleId( profileID);
+
+                    Schedule.removeClassFromSchedule(profSchedID,classId);
+                    Schedule.removeClassFromSchedule(trainerSchedID,classId);
+                    Schedule.deleteClassFromDB(classId);
+
                     break;
                 case 6:
-                    int schId1 = Profile.getProfileScheduleId( profileID);
+                    System.out.println("Rescheduling Class");
+
                     System.out.print("Enter your class id ");
-                    int classId1 = scanner.nextInt();
+                    int clasId = scanner.nextInt();
                     scanner.nextLine();
-                    Schedule.removeClassFromSchedule(schId1,classId1);
+
+                    int profileSchedID = Profile.getProfileScheduleId( profileID);
+                    int tSchedID = Trainer.getTrainerScheduleID(FitnessClass.getTrainerIDForClass(clasId));
+
+                    Schedule.removeClassFromSchedule(profileSchedID,clasId);
+                    Schedule.removeClassFromSchedule(tSchedID,clasId);
+                    Schedule.deleteClassFromDB(clasId);
+
+                    System.out.println(" \n Removed Old Class, now let's book the new one \n");
 
                     Profile.BookPTClass(profileID);
                     break;
@@ -332,12 +345,10 @@ public class Main {
                     break;
                 case 2:
                     FitnessClass.createclassUI();
-                    // TODO: Make a group class and add to schedule
-                    System.out.println("Making a group class and adding to schedule...");
                     break;
                 case 3:
-                    FitnessClass.updateclassUI();
                     System.out.println("Updating a class...");
+                    FitnessClass.updateclassUI();
                     break;
                 case 4:
                     EquipMaintenanceUI();
@@ -379,18 +390,13 @@ public class Main {
             switch (choice) {
                 case 1:
                     Admin.viewAllRepairTickets();
-                    // TODO: View all repair tickets
                     System.out.println("Viewing all repair tickets...");
                     break;
                 case 2:
                     Admin.addRepairTicketUI();
-                    // TODO: Add repair ticket
-                    System.out.println("Adding repair ticket...");
                     break;
                 case 3:
                     Admin.removeRepairTicketUI();
-                    // TODO: Remove repair ticket
-                    System.out.println("Removing repair ticket...");
                     break;
                 case 0:
                     System.out.println("Exiting Equipment Maintenance...");
@@ -402,12 +408,5 @@ public class Main {
         }
     }
 
-
-    public static String getCurrentDate()
-    {
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return today.format(formatter);
-    }
 
 }
