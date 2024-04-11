@@ -24,10 +24,12 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-        String databaseName = "***";
+
+        String databaseName = "finalproject";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "***";
+        String password = "xsixteen123";
+
         //</editor-fold
 
         try{
@@ -67,8 +69,6 @@ public class Main {
                         break;
 
                     CustomerUI(custID);
-
-
 
                     break;
                 case 2:
@@ -197,8 +197,9 @@ public class Main {
             System.out.println("3. Add group class to schedule");
             System.out.println("4. Book personal training class");
             System.out.println("5. Remove class from schedule");
-            System.out.println("6. Change health");
-            System.out.println("7. View Routines");
+            System.out.println("6. Reschedule class");
+            System.out.println("7. Change health");
+            System.out.println("8. View Routines");
             System.out.println("0. Exit");
 
             System.out.print("Enter your choice: ");
@@ -229,11 +230,21 @@ public class Main {
                     Schedule.removeClassFromSchedule(schId,classId);
                     break;
                 case 6:
-                    Health.updatehealthUI(profileID);
+                    int schId1 = Profile.getProfileScheduleId( profileID);
+                    System.out.print("Enter your class id ");
+                    int classId1 = scanner.nextInt();
+                    scanner.nextLine();
+                    Schedule.removeClassFromSchedule(schId1,classId1);
+
+                    Profile.BookPTClass(profileID);
                     break;
                 case 7:
+                    Health.updatehealthUI(profileID);
+                    break;
+                case 8:
                     System.out.println("Printing all Routines");
                     Profile.showProfileRoutines(profileID);
+                    break;
                 case 0:
                     System.out.println("Exiting Profile...");
                     break;
@@ -252,7 +263,7 @@ public class Main {
             System.out.println("\nSelect an option:");
             System.out.println("1. Set working hours for the day");
             System.out.println("2. Show all clients");
-            System.out.println("3. Find gym profile by name");
+            System.out.println("3. Find gym profile by ID");
             System.out.println("4. Create new Routine");
             System.out.println("5. Show all My Routines");
             System.out.println("6. Add Routine to Client");
@@ -271,7 +282,7 @@ public class Main {
 
                     break;
                 case 3:
-                   // TODO: findGymProfileByName();
+                    Trainer.findGymProfileByNameUI();
                     break;
                 case 4:
                     Trainer.createTrainerRoutine(trainerID);
@@ -320,6 +331,7 @@ public class Main {
                     System.out.println("Viewing day's schedule...");
                     break;
                 case 2:
+                    FitnessClass.createclassUI();
                     // TODO: Make a group class and add to schedule
                     System.out.println("Making a group class and adding to schedule...");
                     break;

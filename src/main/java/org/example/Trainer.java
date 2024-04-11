@@ -440,6 +440,43 @@ public class Trainer
             e.printStackTrace();
         }
     }
+    private static void findGymProfileByName(int profileId) {
+        Connection conn = Main.dbConnection;
+        String sql = "SELECT p.id, p.first_name, p.last_name, p.goal_weight, p.goal_date, " +
+                "h.age, h.weight, h.height, h.body_fat_percentage, h.health_conditions " +
+                "FROM Profile p " +
+                "JOIN Health h ON p.health_id = h.id " +
+                "WHERE p.id = ?";
 
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, profileId);
+            ResultSet rs = pstmt.executeQuery();
 
+            if (rs.next()) {
+                System.out.println("Profile ID: " + rs.getInt("id"));
+                System.out.println("First Name: " + rs.getString("first_name"));
+                System.out.println("Last Name: " + rs.getString("last_name"));
+                System.out.println("Goal Weight: " + rs.getInt("goal_weight"));
+                System.out.println("Goal Date: " + rs.getDate("goal_date"));
+                System.out.println("Age: " + rs.getInt("age"));
+                System.out.println("Weight: " + rs.getFloat("weight"));
+                System.out.println("Height: " + rs.getFloat("height"));
+                System.out.println("Body Fat Percentage: " + rs.getFloat("body_fat_percentage"));
+                System.out.println("Health Conditions: " + rs.getString("health_conditions"));
+            } else {
+                System.out.println("No profile found for profile ID: " + profileId);
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR: An error occurred while finding the profile.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void findGymProfileByNameUI(){
+        Scanner scanner = Main.scanner;
+        System.out.println("Enter ID of profile:");
+        int id = scanner.nextInt();
+        findGymProfileByName(id);
+    }
 }

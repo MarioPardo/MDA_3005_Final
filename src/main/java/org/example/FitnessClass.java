@@ -8,42 +8,58 @@ public class FitnessClass
 {
 
     public static int createClass(Date date, Time time, boolean isGroup, Integer roomNumber, int trainerId, Integer[] participants) {
-        String sql = "INSERT INTO Class (date, time, is_group, room_number, trainer_id, participants) " +
+        String insertClassSql = "INSERT INTO Class (date, time, is_group, room_number, trainer_id, participants) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
+        String updateScheduleSql = "UPDATE Schedule SET classes = array_append(classes, ?) WHERE id = (SELECT schedules[1] FROM Trainer WHERE id = ?)";
+
         try {
-
             Connection conn = Main.dbConnection;
-            PreparedStatement statement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 
-            statement.setDate(1, date);
-            statement.setTime(2, time);
-            statement.setBoolean(3, isGroup);
+            // Insert class into Class table
+            PreparedStatement insertStatement = conn.prepareStatement(insertClassSql, Statement.RETURN_GENERATED_KEYS);
+            insertStatement.setDate(1, date);
+            insertStatement.setTime(2, time);
+            insertStatement.setBoolean(3, isGroup);
             if (roomNumber != null)
-                statement.setInt(4, roomNumber);
+                insertStatement.setInt(4, roomNumber);
             else
-                statement.setNull(4, Types.INTEGER);
-            statement.setInt(5, trainerId);
-            statement.setArray(6, conn.createArrayOf("INTEGER", participants));
+                insertStatement.setNull(4, Types.INTEGER);
+            insertStatement.setInt(5, trainerId);
+            insertStatement.setArray(6, conn.createArrayOf("INTEGER", participants));
+            int rowsInserted = insertStatement.executeUpdate();
 
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("A new row has been inserted successfully.");
+            // Check if class was inserted successfully
+            if (rowsInserted <= 0) {
+                throw new SQLException("Failed to insert class.");
             }
 
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return generatedKeys.getInt(1);
-            } else {
+            // Get the ID of the newly created class
+            ResultSet generatedKeys = insertStatement.getGeneratedKeys();
+            if (!generatedKeys.next()) {
                 throw new SQLException("Failed to retrieve generated ID.");
             }
+            int classId = generatedKeys.getInt(1);
 
+            // Update schedule's classes array
+            PreparedStatement updateStatement = conn.prepareStatement(updateScheduleSql);
+            updateStatement.setInt(1, classId);
+            updateStatement.setInt(2, trainerId);
+            int rowsUpdated = updateStatement.executeUpdate();
 
+            // Check if schedule was updated successfully
+            if (rowsUpdated <= 0) {
+                throw new SQLException("Failed to update schedule.");
+            }
+
+            System.out.println("A new class has been created and added to the schedule.");
+            return classId;
         } catch (SQLException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
             return -1;
         }
     }
+
     private static void updateClass(int classId,Date date, Time time, boolean isGroup, Integer roomNumber, int trainerId, Integer[] participants) {
         String sql = "UPDATE CLASS SET date=?,time=?,is_group=?,room_number=?,trainer_id=?,participants=? WHERE id=?";
         try {
@@ -114,6 +130,50 @@ public class FitnessClass
             }
         }
         updateClass(classId, date, time, isGroup, roomNumber, trainerId, participants);
+    }
+    public static void createclassUI(){
+        Scanner scanner = new Scanner(System.in);
+
+        // Prompt user for class details
+        System.out.println("Enter date (YYYY-MM-DD):");
+        String dateStr = scanner.nextLine();
+        Date date = Date.valueOf(dateStr);
+
+        System.out.println("Enter time (HH:MM:SS):");
+        String timeStr = scanner.nextLine();
+        Time time = Time.valueOf(timeStr);
+
+        System.out.println("Is it a group class? (true/false):");
+        boolean isGroup = scanner.nextBoolean();
+        scanner.nextLine(); // Consume newline
+
+        System.out.println("Enter room number (optional, enter 'null' if not applicable):");
+        Integer roomNumber = null;
+        String roomNumberStr = scanner.nextLine();
+        if (!roomNumberStr.equalsIgnoreCase("null")) {
+            roomNumber = Integer.parseInt(roomNumberStr);
+        }
+
+        System.out.println("Enter Participant IDs (comma-separated, leave empty if none): ");
+        scanner.nextLine();
+        Integer[] participants;
+        String participantsStr = scanner.nextLine();
+        if (participantsStr.isEmpty()) {
+            participants = new Integer[0];
+        } else {
+            String[] participantsArr = participantsStr.split(",");
+            participants = new Integer[participantsArr.length];
+            for (int i = 0; i < participantsArr.length; i++) {
+                participants[i] = Integer.parseInt(participantsArr[i]);
+            }
+        }
+
+        System.out.println("Enter Trainer ID:");
+        int trainerId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        // Call createClass function with user inputted data
+        FitnessClass.createClass(date, time, isGroup, roomNumber, trainerId, participants);
     }
 
     public static String getTrainerForClass(int classID)

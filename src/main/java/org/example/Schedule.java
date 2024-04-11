@@ -178,6 +178,7 @@ public class Schedule {
         Connection conn = Main.dbConnection;
         String deleteFromClassSql = "DELETE FROM Class WHERE id = ?";
         String removeFromScheduleSql = "UPDATE Schedule SET classes = array_remove(classes, ?) WHERE ? = ANY(classes)";
+        String removeFromProfileSql = "UPDATE Profile SET schedules = array_remove(schedules, ?) WHERE ? = ANY(schedules)";
 
         try {
             // Remove the class from the Class table
@@ -191,6 +192,12 @@ public class Schedule {
                 removeFromScheduleStmt.setInt(1, classId);
                 removeFromScheduleStmt.setInt(2, classId);
                 removeFromScheduleStmt.executeUpdate();
+
+                // Remove the class from profiles associated with the class
+                PreparedStatement removeFromProfileStmt = conn.prepareStatement(removeFromProfileSql);
+                removeFromProfileStmt.setInt(1, classId);
+                removeFromProfileStmt.setInt(2, classId);
+                removeFromProfileStmt.executeUpdate();
 
                 System.out.println("Class canceled successfully.");
             } else {
