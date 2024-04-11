@@ -24,10 +24,10 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-        String databaseName = "***";
+        String databaseName = "3005_FinalProj";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "***";
+        String password = "0937pipe";
         //</editor-fold
 
         try{
@@ -219,7 +219,7 @@ public class Main {
                     Profile.BookPTClass(profileID);
                     break;
                 case 5:
-                    System.out.println("Removing class from schedule. Please enter the class ID of the class you'd like to remove!");
+                    System.out.println("Removing class from schedule");
 
                     System.out.print("Enter your class id ");
                     int classId = scanner.nextInt();
@@ -234,11 +234,20 @@ public class Main {
 
                     break;
                 case 6:
-                    int schId1 = Profile.getProfileScheduleId( profileID);
+                    System.out.println("Rescheduling Class");
+
                     System.out.print("Enter your class id ");
-                    int classId1 = scanner.nextInt();
+                    int clasId = scanner.nextInt();
                     scanner.nextLine();
-                    Schedule.removeClassFromSchedule(schId1,classId1);
+
+                    int profileSchedID = Profile.getProfileScheduleId( profileID);
+                    int tSchedID = Trainer.getTrainerScheduleID(FitnessClass.getTrainerIDForClass(clasId));
+
+                    Schedule.removeClassFromSchedule(profileSchedID,clasId);
+                    Schedule.removeClassFromSchedule(tSchedID,clasId);
+                    Schedule.deleteClassFromDB(clasId);
+
+                    System.out.println(" \n Removed Old Class, now let's book the new one \n");
 
                     Profile.BookPTClass(profileID);
                     break;

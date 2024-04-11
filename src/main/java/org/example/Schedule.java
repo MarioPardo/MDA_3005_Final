@@ -116,6 +116,9 @@ public class Schedule {
 
 
     public static void addClassToSchedule(int scheduleId, int classId) {
+
+        System.out.println("Adding class " + classId + "to sched " + scheduleId);
+
         Connection conn = Main.dbConnection;
         String sql = "UPDATE Schedule SET classes = array_append(classes, ?) WHERE id = ?";
 
@@ -259,7 +262,14 @@ public class Schedule {
         }
     }
 
-    public static void removeClassFromSchedule(int scheduleId, int classIdToRemove) {
+    public static int removeClassFromSchedule(int scheduleId, int classIdToRemove) {
+
+        if(!isClassInSchedule(scheduleId,classIdToRemove))
+        {
+            System.out.println("** Class not in schedule **");
+            return -1;
+        }
+
         Connection connection = Main.dbConnection;
 
         String sql = "UPDATE Schedule SET classes = array_remove(classes, ?) WHERE id = ?";
@@ -273,11 +283,6 @@ public class Schedule {
             if (rowsUpdated == 0) {
                 System.out.println("Schedule ID not found. No rows updated.");
             }
-            else if(! (check = isClassInSchedule(scheduleId,classIdToRemove)))
-            {
-                System.out.println("Class ID not found. No rows updated.");
-
-            }
             else {
                 System.out.println("Class removed from schedule successfully.");
             }
@@ -285,6 +290,8 @@ public class Schedule {
         catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return 1;
     }
 
     public static void deleteClassFromDB(int classID) {
