@@ -25,10 +25,10 @@ public class Main {
     {
         //<editor-fold desc=" Insert Info HERE!">
 
-        String databaseName = "***";
+        String databaseName = "finalproject";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "***";
+        String password = "xsixteen123";
 
         //</editor-fold
 
@@ -69,9 +69,6 @@ public class Main {
                         break;
 
                     CustomerUI(custID);
-
-
-
 
                     break;
                 case 2:
@@ -266,7 +263,7 @@ public class Main {
             System.out.println("\nSelect an option:");
             System.out.println("1. Set working hours for the day");
             System.out.println("2. Show all clients");
-            System.out.println("3. Find gym profile by name");
+            System.out.println("3. Find gym profile by ID");
             System.out.println("4. Create new Routine");
             System.out.println("5. Show all My Routines");
             System.out.println("6. Add Routine to Client");
@@ -334,6 +331,7 @@ public class Main {
                     System.out.println("Viewing day's schedule...");
                     break;
                 case 2:
+                    FitnessClass.createclassUI();
                     // TODO: Make a group class and add to schedule
                     System.out.println("Making a group class and adding to schedule...");
                     break;
