@@ -7,12 +7,11 @@ import java.util.Scanner;
 
 public class Schedule {
 
-    public static int createSchedule(String date) {
+    public static int createSchedule() {
         Connection conn = Main.dbConnection;
-        String sql = "INSERT INTO schedule (schedule_date) VALUES (?) RETURNING id";
+        String sql = "INSERT INTO schedule DEFAULT VALUES RETURNING id"; // Insert without specifying schedule_date
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDate(1, Date.valueOf(date));
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {

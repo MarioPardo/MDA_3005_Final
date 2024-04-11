@@ -50,7 +50,7 @@ public class Profile {
         }
 
         String currentDate = getCurrentDate();
-        int scheduleId = Schedule.createSchedule(currentDate);
+        int scheduleId = Schedule.createSchedule();
         try {
             Connection connection = Main.dbConnection;
             PreparedStatement profileStmt = connection.prepareStatement(profileSql, Statement.RETURN_GENERATED_KEYS);
