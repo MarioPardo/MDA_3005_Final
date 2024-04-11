@@ -375,18 +375,13 @@ public class Main {
             switch (choice) {
                 case 1:
                     Admin.viewAllRepairTickets();
-                    // TODO: View all repair tickets
                     System.out.println("Viewing all repair tickets...");
                     break;
                 case 2:
                     Admin.addRepairTicketUI();
-                    // TODO: Add repair ticket
-                    System.out.println("Adding repair ticket...");
                     break;
                 case 3:
                     Admin.removeRepairTicketUI();
-                    // TODO: Remove repair ticket
-                    System.out.println("Removing repair ticket...");
                     break;
                 case 0:
                     System.out.println("Exiting Equipment Maintenance...");

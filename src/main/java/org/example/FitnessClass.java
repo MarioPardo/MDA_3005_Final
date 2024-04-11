@@ -66,7 +66,6 @@ public class FitnessClass
         try {
             Connection conn = Main.dbConnection;
             PreparedStatement statement = conn.prepareStatement(sql);
-            // Prepare the SQL statement
 
             // Set values for parameters
             statement.setTime(1, time);
