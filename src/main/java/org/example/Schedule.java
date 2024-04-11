@@ -45,7 +45,6 @@ public class Schedule {
                 classesFound = true;
 
                 int classId = rs.getInt("id");
-                Date date = rs.getDate("date");
                 Time time = rs.getTime("time");
                 Time endTime = Time.valueOf(time.toLocalTime().plusHours(1));
                 String formattedTime = time.toString().substring(0, 5);
@@ -57,11 +56,11 @@ public class Schedule {
                 if(isGroup)
                 {
                     System.out.println("\n Class " + classNum++ +" :");
-                    System.out.println("   Group Class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + " - " + endTime + "  ID: " + classId );
+                    System.out.println("   Group Class with Trainer: " + Trainer.getTrainerName(trainerId) +  "   at: " + formattedTime + " - " + endTime + "  ID: " + classId );
                 }else
                 {
                     System.out.println("\n Class " + classNum++ +" :");
-                    System.out.println("   Personal Training class with Trainer: " + Trainer.getTrainerName(trainerId) + "  on: " + date + "   at: " + formattedTime + " - " + endTime +"  ID: " + classId  );
+                    System.out.println("   Personal Training class with Trainer: " + Trainer.getTrainerName(trainerId) +  "   at: " + formattedTime + " - " + endTime +"  ID: " + classId  );
                 }
 
                 if (roomNumber != null)
@@ -153,13 +152,11 @@ public class Schedule {
             while (rs.next()) {
                 foundBookings = true;
                 int classId = rs.getInt("id");
-                java.sql.Date classDate = rs.getDate("date");
                 java.sql.Time classTime = rs.getTime("time");
                 int roomNumber = rs.getInt("room_number");
                 int trainerId = rs.getInt("trainer_id");
 
                 System.out.println("Class ID: " + classId);
-                System.out.println("Date: " + classDate);
                 System.out.println("Time: " + classTime);
                 System.out.println("Room Number: " + roomNumber);
                 System.out.println("Trainer ID: " + trainerId);
@@ -214,22 +211,19 @@ public class Schedule {
         cancelClass(id);
     }
 
-    public static void ViewAllGroupClasses(String date)
+    public static void ViewAllGroupClasses()
     {
-        System.out.println("Showing group classes for " + date);
+        System.out.println("Showing All group classes \n ");
         Connection conn = Main.dbConnection;
 
-        String classSql = "SELECT id, time, room_number, trainer_id FROM Class WHERE date = ? AND is_group = TRUE";
+        String classSql = "SELECT id, time, room_number, trainer_id FROM Class WHERE is_group = TRUE";
         try {
             PreparedStatement classStmt = conn.prepareStatement(classSql);
-            classStmt.setDate(1, java.sql.Date.valueOf(date));
-
             ResultSet classRs = classStmt.executeQuery();
 
             if (!classRs.isBeforeFirst()) {
                 System.out.println("NO GROUP CLASSES FOR THE DAY");
             } else {
-                System.out.println("Group Classes for " + date + ":");
                 while (classRs.next()) {
                     Time classTime = classRs.getTime("time");
                     String formattedTime = classTime.toString().substring(0, 5);

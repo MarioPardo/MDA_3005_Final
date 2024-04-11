@@ -24,12 +24,10 @@ public class Main {
     public static boolean setDbConnection()
     {
         //<editor-fold desc=" Insert Info HERE!">
-
-        String databaseName = "finalproject";
+        String databaseName = "***";
         String url = "jdbc:postgresql://localhost:5432/" + databaseName;
         String user = "postgres";
-        String password = "xsixteen123";
-
+        String password = "***";
         //</editor-fold
 
         try{
@@ -211,7 +209,7 @@ public class Main {
                     Schedule.viewSchedule(profileID);
                     break;
                 case 2:
-                    Schedule.ViewAllGroupClasses(getCurrentDate()); //since only doing for current day
+                    Schedule.ViewAllGroupClasses(); //since only doing for current day
                     break;
                 case 3:
                     Profile.addGroupClassToSchedule(profileID);
@@ -332,12 +330,10 @@ public class Main {
                     break;
                 case 2:
                     FitnessClass.createclassUI();
-                    // TODO: Make a group class and add to schedule
-                    System.out.println("Making a group class and adding to schedule...");
                     break;
                 case 3:
-                    FitnessClass.updateclassUI();
                     System.out.println("Updating a class...");
+                    FitnessClass.updateclassUI();
                     break;
                 case 4:
                     EquipMaintenanceUI();

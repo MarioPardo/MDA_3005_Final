@@ -259,7 +259,7 @@ public class Profile {
         LocalTime lt = LocalTime.parse(newFormatTime, DateTimeFormatter.ofPattern("HH:mm:ss"));
         Time newtime = Time.valueOf(lt);
 
-        int classID = FitnessClass.createClass(Date.valueOf(LocalDate.now()),newtime,false,null, trainerID,new Integer[]{profID});
+        int classID = FitnessClass.createClass(newtime,false,null, trainerID,new Integer[]{profID});
 
         //add class to respective schedules
         Schedule.addClassToSchedule(getProfileScheduleId(profID),classID);
