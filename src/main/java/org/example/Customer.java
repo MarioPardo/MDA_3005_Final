@@ -15,8 +15,6 @@ public class Customer {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
 
-            System.out.println(pstmt);
-
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
