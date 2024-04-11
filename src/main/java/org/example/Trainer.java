@@ -30,6 +30,7 @@ public class Trainer
                 return -1;
             }
 
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

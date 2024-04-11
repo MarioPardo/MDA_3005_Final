@@ -1,3 +1,8 @@
+CREATE TYPE int_tuple AS (
+    x INTEGER,
+    y INTEGER
+    );
+
 CREATE TABLE Customer (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
@@ -41,15 +46,28 @@ CREATE TABLE Class (
     participants INT[]
 );
 
-CREATE TYPE int_tuple AS (
-    x INTEGER,
-    y INTEGER
+CREATE TABLE Trainer (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    schedules INT[],
+    clients INT[],
+    routines INT[],
+    working_hours VARCHAR(5)[] DEFAULT '{"09:00", "17:00"}', -- Default working hours in "HH:MM" format
+    username VARCHAR(50),
+    password VARCHAR(50)
 );
 
 CREATE TABLE Routine (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     exercises TEXT[] -- Array of exercise names
+);
+
+CREATE TABLE RepairTicket (
+    ticket_id SERIAL PRIMARY KEY,
+    issue_description TEXT NOT NULL,
+    ticket_date DATE NOT NULL
 );
 
 
