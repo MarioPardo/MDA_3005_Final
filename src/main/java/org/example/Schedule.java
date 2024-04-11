@@ -286,5 +286,27 @@ public class Schedule {
             e.printStackTrace();
         }
     }
+
+    public static void deleteClassFromDB(int classID) {
+        Connection conn = Main.dbConnection;
+        try {
+            // Delete the class entry from the Class table
+            String deleteClassSql = "DELETE FROM Class WHERE id = ?";
+            PreparedStatement deleteClassStmt = conn.prepareStatement(deleteClassSql);
+            deleteClassStmt.setInt(1, classID);
+            deleteClassStmt.executeUpdate();
+
+            // Remove the class ID from any schedules that include it
+            String updateScheduleSql = "UPDATE Schedule SET classes = array_remove(classes, ?)";
+            PreparedStatement updateScheduleStmt = conn.prepareStatement(updateScheduleSql);
+            updateScheduleStmt.setInt(1, classID);
+            updateScheduleStmt.executeUpdate();
+
+            System.out.println("Class with ID " + classID + " has been deleted from the database.");
+        } catch (SQLException e) {
+            System.out.println("Error deleting class from the database.");
+            e.printStackTrace();
+        }
+    }
 }
 

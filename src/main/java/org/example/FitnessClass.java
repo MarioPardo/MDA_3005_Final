@@ -7,9 +7,9 @@ import java.sql.*;
 public class FitnessClass
 {
 
-    public static int createClass( Time time, boolean isGroup, Integer roomNumber, int trainerId, Integer[] participants) {
-        String insertClassSql = "INSERT INTO Class (time, is_group, room_number, trainer_id, participants) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+    public static int createClass(Time time, boolean isGroup, Integer roomNumber, int trainerId, Integer[] participants) {
+        String insertClassSql = "INSERT INTO Class ( time, is_group, room_number, trainer_id, participants) " +
+                "VALUES (?, ?, ?, ?, ?)";
         String updateScheduleSql = "UPDATE Schedule SET classes = array_append(classes, ?) WHERE id = (SELECT schedules[1] FROM Trainer WHERE id = ?)";
 
         try {
@@ -19,12 +19,10 @@ public class FitnessClass
             PreparedStatement insertStatement = conn.prepareStatement(insertClassSql, Statement.RETURN_GENERATED_KEYS);
             insertStatement.setTime(1, time);
             insertStatement.setBoolean(2, isGroup);
-
             if (roomNumber != null)
                 insertStatement.setInt(3, roomNumber);
             else
                 insertStatement.setNull(3, Types.INTEGER);
-
             insertStatement.setInt(4, trainerId);
             insertStatement.setArray(5, conn.createArrayOf("INTEGER", participants));
             int rowsInserted = insertStatement.executeUpdate();
@@ -190,6 +188,25 @@ public class FitnessClass
             e.printStackTrace();
         }
         return "UNKNOWN TRAINER";
+    }
+
+    public static int getTrainerIDForClass(int classID) {
+        Connection conn = Main.dbConnection;
+        int trainerID = -1; // Initialize with a default value in case no trainer is found
+
+        String trainerSql = "SELECT trainer_id FROM Class WHERE id = ?";
+        try {
+            PreparedStatement trainerStmt = conn.prepareStatement(trainerSql);
+            trainerStmt.setInt(1, classID);
+            ResultSet trainerRs = trainerStmt.executeQuery();
+
+            if (trainerRs.next()) {
+                trainerID = trainerRs.getInt("trainer_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return trainerID;
     }
 
 

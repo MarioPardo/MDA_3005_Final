@@ -221,11 +221,17 @@ public class Main {
                 case 5:
                     System.out.println("Removing class from schedule. Please enter the class ID of the class you'd like to remove!");
 
-                    int schId = Profile.getProfileScheduleId( profileID);
                     System.out.print("Enter your class id ");
                     int classId = scanner.nextInt();
                     scanner.nextLine();
-                    Schedule.removeClassFromSchedule(schId,classId);
+
+                    int trainerSchedID = Trainer.getTrainerScheduleID(FitnessClass.getTrainerIDForClass(classId));
+                    int profSchedID = Profile.getProfileScheduleId( profileID);
+
+                    Schedule.removeClassFromSchedule(profSchedID,classId);
+                    Schedule.removeClassFromSchedule(trainerSchedID,classId);
+                    Schedule.deleteClassFromDB(classId);
+
                     break;
                 case 6:
                     int schId1 = Profile.getProfileScheduleId( profileID);
