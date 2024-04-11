@@ -1,7 +1,5 @@
 package org.example;
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -49,7 +47,6 @@ public class Profile {
             return -1; // Return -1 if health details cannot be created
         }
 
-        String currentDate = getCurrentDate();
         int scheduleId = Schedule.createSchedule();
         try {
             Connection connection = Main.dbConnection;
