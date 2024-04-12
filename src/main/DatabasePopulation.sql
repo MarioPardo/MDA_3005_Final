@@ -1,5 +1,5 @@
 
---STEP 1
+--STEP 1---
 
 --creating customers
 INSERT INTO Customer (username, password, profile_ids) VALUES ('customer1', 'password1', '{1,2}');
@@ -12,7 +12,7 @@ INSERT INTO Health (weight, age, height, body_fat_percentage, health_conditions)
 --respectively they should give have IDs of 1,2,3
     --these will be used later when linking them to their respective Profiles
 
---STEP 2
+--STEP 2  ----
 
 --creating profiles
 INSERT INTO Profile (id, goal_weight, first_name, last_name, goal_date, achievements, health_id, schedules, routines)
