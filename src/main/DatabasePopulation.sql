@@ -14,23 +14,23 @@ INSERT INTO Health (weight, age, height, body_fat_percentage, health_conditions)
 
 --STEP 2  ----
 
---creating profiles
-INSERT INTO Profile (id, goal_weight, first_name, last_name, goal_date, achievements, health_id, schedules, routines)
-VALUES (1, 70, 'John', 'Doe', '2024-05-01', '{}', 1, '{1}', '{2}');
+-- Creating profiles
+INSERT INTO Profile (goal_weight, first_name, last_name, goal_date, achievements, health_id, schedules, routines)
+VALUES (70, 'John', 'Doe', '2024-05-01', '{}', 1, '{1}', '{2}');
 
-INSERT INTO Profile (id, goal_weight, first_name, last_name, goal_date, achievements, health_id, schedules, routines)
-VALUES (2, 75, 'Alice', 'Smith', '2024-06-01', '{}', 2, '{2}', '{1}');
+INSERT INTO Profile (goal_weight, first_name, last_name, goal_date, achievements, health_id, schedules, routines)
+VALUES (75, 'Alice', 'Smith', '2024-06-01', '{}', 2, '{2}', '{1}');
 
-INSERT INTO Profile (id, goal_weight, first_name, last_name, goal_date, achievements, health_id, schedules, routines)
-VALUES (3, 80, 'Emily', 'Johnson', '2024-07-01', '{}', 3, '{3}', '{1}');
+INSERT INTO Profile (goal_weight, first_name, last_name, goal_date, achievements, health_id, schedules, routines)
+VALUES (80, 'Emily', 'Johnson', '2024-07-01', '{}', 3, '{3}', '{1}');
 
 
---schedules
-INSERT INTO Schedule (id, classes) VALUES (1, '{3}'); --john
-INSERT INTO Schedule (id, classes) VALUES (2, '{4}'); --alice
-INSERT INTO Schedule (id, classes) VALUES (3, '{5}'); --emily
-INSERT INTO Schedule (id, classes) VALUES (4, '{1,4,5}'); --trainer 1
-INSERT INTO Schedule (id, classes) VALUES (5, '{2,3}'); --trainer 2
+-- Schedules
+INSERT INTO Schedule (classes) VALUES ('{3}'); -- John
+INSERT INTO Schedule (classes) VALUES ('{4}'); -- Alice
+INSERT INTO Schedule (classes) VALUES ('{5}'); -- Emily
+INSERT INTO Schedule (classes) VALUES ('{1,4,5}'); -- Trainer 1
+INSERT INTO Schedule (classes) VALUES ('{2,3}'); -- Trainer 2
 
 --classes
     --group
