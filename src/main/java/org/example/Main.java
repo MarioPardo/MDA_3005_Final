@@ -288,7 +288,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    //TODO : setWorkingHours();
+                    Trainer.changeWorkingHours(trainerID);
                     break;
                 case 2:
                     Trainer.showTrainerClients(trainerID);

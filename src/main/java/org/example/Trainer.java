@@ -479,4 +479,46 @@ public class Trainer
         int id = scanner.nextInt();
         findGymProfileByName(id);
     }
+
+
+    public static void changeWorkingHours(int trainerId) {
+        // Scanner for user input
+        Scanner scanner = Main.scanner;
+        scanner.nextLine();
+
+        System.out.println("Enter new working hours for the trainer in the format HH:MM");
+        System.out.print("Start time: ");
+        String startTime = scanner.nextLine();
+        System.out.print("End time: ");
+        String endTime = scanner.nextLine();
+
+        System.out.println("Start Time: " + startTime + " - -  End Time:" +endTime );
+
+        // SQL update statement
+        String sql = "UPDATE Trainer SET working_hours = ? WHERE id = ?";
+
+        Connection conn = Main.dbConnection;
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Set parameters using array literal
+            pstmt.setObject(1, new String[] {startTime, endTime}, Types.ARRAY);
+            pstmt.setInt(2, trainerId);
+
+            // Execute update
+            int rowsUpdated = pstmt.executeUpdate();
+
+            // Check if update was successful
+            if (rowsUpdated > 0) {
+                System.out.println("Working hours updated successfully for trainer ID " + trainerId);
+            } else {
+                System.out.println("Failed to update working hours for trainer ID " + trainerId);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error updating working hours: " + e.getMessage());
+        }
+    }
+
+
 }
+
+

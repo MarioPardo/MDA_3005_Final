@@ -1,5 +1,8 @@
 package org.example;
 import java.sql.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 import java.sql.*;
@@ -89,7 +92,7 @@ public class FitnessClass
         }
     }
     public static void updateclassUI(){
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = Main.scanner;
         System.out.println("Enter Class ID to update: ");
         int classId = scanner.nextInt();
 
@@ -118,11 +121,24 @@ public class FitnessClass
         updateClass(classId, time, true, roomNumber, trainerId, participants);
     }
     public static void createclassUI(){
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = Main.scanner;
 
-        System.out.println("Enter time (HH:MM:SS):");
-        String timeStr = scanner.nextLine();
-        Time time = Time.valueOf(timeStr);
+        // Select an hour slot
+        LocalTime time = null;
+        System.out.println("Enter a time in the format HH:MM:");
+        String inputTime = scanner.nextLine();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        try {
+            time = LocalTime.parse(inputTime, formatter);
+            System.out.println("Time entered: " + time);
+        } catch (Exception e) {
+            System.out.println("Invalid time format. Please enter in HH:MM format.");
+            return;
+        }
+
+        // Convert to SQL format
+        Time sqlTime = Time.valueOf(time); // Directly convert LocalTime to Time
 
 
         System.out.println("Enter room number (optional, enter 'null' if not applicable):");
@@ -145,8 +161,24 @@ public class FitnessClass
             return;
         }
 
+        LocalTime[] workingHours = Trainer.getTrainerWorkingHours(trainerId);
+        List<LocalTime[]> bookedHours = Trainer.getTrainerBookedHours(trainerId);
+
+        if(!Trainer.checkWithinWorkingHours(time, workingHours))
+        {
+            System.out.println("This time does not fit within the trainer's working hours");
+            return;
+        }
+
+        for (LocalTime[] hours : bookedHours) {
+            if (Trainer.checkTimeOverlap(time, time.plusHours(1), hours[0], hours[1])) {
+                System.out.println("This time overlaps with a booked class");
+                return;
+            }
+        }
+
         // Call createClass function with user inputted data
-        FitnessClass.createClass(time, true, roomNumber, trainerId, participants);
+        FitnessClass.createClass(sqlTime, true, roomNumber, trainerId, participants);
     }
 
     public static String getTrainerForClass(int classID)
