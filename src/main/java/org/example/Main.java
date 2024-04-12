@@ -209,7 +209,7 @@ public class Main {
                     Schedule.viewSchedule(profileID);
                     break;
                 case 2:
-                    Schedule.ViewAllGroupClasses(); //since only doing for current day
+                    Schedule.ViewAllGroupClasses();
                     break;
                 case 3:
                     Profile.addGroupClassToSchedule(profileID);
@@ -340,14 +340,13 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    // TODO: View day's schedule
-                    System.out.println("Viewing day's schedule...");
+                    Schedule.ViewAllGroupClasses();
                     break;
                 case 2:
                     FitnessClass.createclassUI();
                     break;
                 case 3:
-                    System.out.println("Updating a class...");
+                    System.out.println(" -- Updating a class -- !");
                     FitnessClass.updateclassUI();
                     break;
                 case 4:
